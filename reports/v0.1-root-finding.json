@@ -1,0 +1,732 @@
+{
+  "schema_version": "1.0.0",
+  "product_version": "0.1.0",
+  "protocol": "docs/protocol.md",
+  "arithmetic": "IEEE-754 binary64 via Rust f64",
+  "x_tolerance": 1e-10,
+  "f_tolerance": 1e-10,
+  "max_iterations": 80,
+  "all_expectations_met": true,
+  "scenarios": [
+    {
+      "id": "cubic-bisection",
+      "expectation": "converged",
+      "passed": true,
+      "result": {
+        "method": "bisection",
+        "function_id": "cubic",
+        "status": "converged",
+        "root": 1.5213797067990527,
+        "residual": 3.277955684666267e-11,
+        "iterations": 33,
+        "function_evaluations": 35,
+        "trace": [
+          {
+            "iteration": 1,
+            "x": 1.5,
+            "fx": -0.125,
+            "step_size": 0.5,
+            "bracket_width": 1.0
+          },
+          {
+            "iteration": 2,
+            "x": 1.75,
+            "fx": 1.609375,
+            "step_size": 0.25,
+            "bracket_width": 0.5
+          },
+          {
+            "iteration": 3,
+            "x": 1.625,
+            "fx": 0.666015625,
+            "step_size": 0.125,
+            "bracket_width": 0.25
+          },
+          {
+            "iteration": 4,
+            "x": 1.5625,
+            "fx": 0.252197265625,
+            "step_size": 0.0625,
+            "bracket_width": 0.125
+          },
+          {
+            "iteration": 5,
+            "x": 1.53125,
+            "fx": 0.059112548828125,
+            "step_size": 0.03125,
+            "bracket_width": 0.0625
+          },
+          {
+            "iteration": 6,
+            "x": 1.515625,
+            "fx": -0.034053802490234375,
+            "step_size": 0.015625,
+            "bracket_width": 0.03125
+          },
+          {
+            "iteration": 7,
+            "x": 1.5234375,
+            "fx": 0.012250423431396484,
+            "step_size": 0.0078125,
+            "bracket_width": 0.015625
+          },
+          {
+            "iteration": 8,
+            "x": 1.51953125,
+            "fx": -0.010971248149871826,
+            "step_size": 0.00390625,
+            "bracket_width": 0.0078125
+          },
+          {
+            "iteration": 9,
+            "x": 1.521484375,
+            "fx": 0.0006221756339073181,
+            "step_size": 0.001953125,
+            "bracket_width": 0.00390625
+          },
+          {
+            "iteration": 10,
+            "x": 1.5205078125,
+            "fx": -0.005178886465728283,
+            "step_size": 0.0009765625,
+            "bracket_width": 0.001953125
+          },
+          {
+            "iteration": 11,
+            "x": 1.52099609375,
+            "fx": -0.002279443317092955,
+            "step_size": 0.00048828125,
+            "bracket_width": 0.0009765625
+          },
+          {
+            "iteration": 12,
+            "x": 1.521240234375,
+            "fx": -0.0008289058605441824,
+            "step_size": 0.000244140625,
+            "bracket_width": 0.00048828125
+          },
+          {
+            "iteration": 13,
+            "x": 1.5213623046875,
+            "fx": -0.0001034331235132413,
+            "step_size": 0.0001220703125,
+            "bracket_width": 0.000244140625
+          },
+          {
+            "iteration": 14,
+            "x": 1.52142333984375,
+            "fx": 0.0002593542519662151,
+            "step_size": 0.00006103515625,
+            "bracket_width": 0.0001220703125
+          },
+          {
+            "iteration": 15,
+            "x": 1.521392822265625,
+            "fx": 0.00007795631350404619,
+            "step_size": 0.000030517578125,
+            "bracket_width": 0.00006103515625
+          },
+          {
+            "iteration": 16,
+            "x": 1.5213775634765625,
+            "fx": -0.000012739467674549587,
+            "step_size": 0.0000152587890625,
+            "bracket_width": 0.000030517578125
+          },
+          {
+            "iteration": 17,
+            "x": 1.5213851928710938,
+            "fx": 0.00003260815724592803,
+            "step_size": 7.62939453125e-6,
+            "bracket_width": 0.0000152587890625
+          },
+          {
+            "iteration": 18,
+            "x": 1.5213813781738281,
+            "fx": 9.934278368817218e-6,
+            "step_size": 3.814697265625e-6,
+            "bracket_width": 7.62939453125e-6
+          },
+          {
+            "iteration": 19,
+            "x": 1.5213794708251953,
+            "fx": -1.402611257361741e-6,
+            "step_size": 1.9073486328125e-6,
+            "bracket_width": 3.814697265625e-6
+          },
+          {
+            "iteration": 20,
+            "x": 1.5213804244995117,
+            "fx": 4.265829404825894e-6,
+            "step_size": 9.5367431640625e-7,
+            "bracket_width": 1.9073486328125e-6
+          },
+          {
+            "iteration": 21,
+            "x": 1.5213799476623535,
+            "fx": 1.4316080361176375e-6,
+            "step_size": 4.76837158203125e-7,
+            "bracket_width": 9.5367431640625e-7
+          },
+          {
+            "iteration": 22,
+            "x": 1.5213797092437744,
+            "fx": 1.4498129807805071e-8,
+            "step_size": 2.384185791015625e-7,
+            "bracket_width": 4.76837158203125e-7
+          },
+          {
+            "iteration": 23,
+            "x": 1.5213795900344849,
+            "fx": -6.940566286139926e-7,
+            "step_size": 1.1920928955078125e-7,
+            "bracket_width": 2.384185791015625e-7
+          },
+          {
+            "iteration": 24,
+            "x": 1.5213796496391296,
+            "fx": -3.3977926561234995e-7,
+            "step_size": 5.960464477539063e-8,
+            "bracket_width": 1.1920928955078125e-7
+          },
+          {
+            "iteration": 25,
+            "x": 1.521379679441452,
+            "fx": -1.6264057167703072e-7,
+            "step_size": 2.9802322387695312e-8,
+            "bracket_width": 5.960464477539063e-8
+          },
+          {
+            "iteration": 26,
+            "x": 1.5213796943426132,
+            "fx": -7.407122248892506e-8,
+            "step_size": 1.4901161193847656e-8,
+            "bracket_width": 2.9802322387695312e-8
+          },
+          {
+            "iteration": 27,
+            "x": 1.5213797017931938,
+            "fx": -2.978654611851539e-8,
+            "step_size": 7.450580596923828e-9,
+            "bracket_width": 1.4901161193847656e-8
+          },
+          {
+            "iteration": 28,
+            "x": 1.5213797055184841,
+            "fx": -7.644208377399764e-9,
+            "step_size": 3.725290298461914e-9,
+            "bracket_width": 7.450580596923828e-9
+          },
+          {
+            "iteration": 29,
+            "x": 1.5213797073811293,
+            "fx": 3.4269609372472587e-9,
+            "step_size": 1.862645149230957e-9,
+            "bracket_width": 3.725290298461914e-9
+          },
+          {
+            "iteration": 30,
+            "x": 1.5213797064498067,
+            "fx": -2.1086234980316476e-9,
+            "step_size": 9.313225746154785e-10,
+            "bracket_width": 1.862645149230957e-9
+          },
+          {
+            "iteration": 31,
+            "x": 1.521379706915468,
+            "fx": 6.591687196078055e-10,
+            "step_size": 4.656612873077393e-10,
+            "bracket_width": 9.313225746154785e-10
+          },
+          {
+            "iteration": 32,
+            "x": 1.5213797066826373,
+            "fx": -7.247278333011309e-10,
+            "step_size": 2.3283064365386963e-10,
+            "bracket_width": 4.656612873077393e-10
+          },
+          {
+            "iteration": 33,
+            "x": 1.5213797067990527,
+            "fx": -3.277955684666267e-11,
+            "step_size": 1.1641532182693481e-10,
+            "bracket_width": 2.3283064365386963e-10
+          }
+        ],
+        "message": "The residual or certified half-width met the frozen tolerance."
+      }
+    },
+    {
+      "id": "cubic-newton",
+      "expectation": "converged",
+      "passed": true,
+      "result": {
+        "method": "newton",
+        "function_id": "cubic",
+        "status": "converged",
+        "root": 1.5213797068045676,
+        "residual": 0.0,
+        "iterations": 4,
+        "function_evaluations": 10,
+        "trace": [
+          {
+            "iteration": 0,
+            "x": 1.5,
+            "fx": -0.125,
+            "step_size": null,
+            "bracket_width": null
+          },
+          {
+            "iteration": 1,
+            "x": 1.5217391304347827,
+            "fx": 0.0021369277554041943,
+            "step_size": 0.021739130434782705,
+            "bracket_width": null
+          },
+          {
+            "iteration": 2,
+            "x": 1.5213798059647863,
+            "fx": 5.893874259754739e-7,
+            "step_size": 0.00035932446999642487,
+            "bracket_width": null
+          },
+          {
+            "iteration": 3,
+            "x": 1.5213797068045751,
+            "fx": 4.529709940470639e-14,
+            "step_size": 9.916021115330409e-8,
+            "bracket_width": null
+          },
+          {
+            "iteration": 4,
+            "x": 1.5213797068045676,
+            "fx": 0.0,
+            "step_size": 7.549516567451064e-15,
+            "bracket_width": null
+          }
+        ],
+        "message": "The residual and step met the frozen tolerances."
+      }
+    },
+    {
+      "id": "cosine-secant",
+      "expectation": "converged",
+      "passed": true,
+      "result": {
+        "method": "secant",
+        "function_id": "cosine",
+        "status": "converged",
+        "root": 0.7390851332151607,
+        "residual": 0.0,
+        "iterations": 7,
+        "function_evaluations": 8,
+        "trace": [
+          {
+            "iteration": 0,
+            "x": 0.0,
+            "fx": 1.0,
+            "step_size": null,
+            "bracket_width": null
+          },
+          {
+            "iteration": 1,
+            "x": 1.0,
+            "fx": -0.45969769413186023,
+            "step_size": 1.0,
+            "bracket_width": null
+          },
+          {
+            "iteration": 2,
+            "x": 0.6850733573260451,
+            "fx": 0.08929927648185998,
+            "step_size": 0.31492664267395487,
+            "bracket_width": null
+          },
+          {
+            "iteration": 3,
+            "x": 0.736298997613654,
+            "fx": 0.004660039038142605,
+            "step_size": 0.0512256402876089,
+            "bracket_width": null
+          },
+          {
+            "iteration": 4,
+            "x": 0.7391193619116293,
+            "fx": -0.000057285991106104106,
+            "step_size": 0.002820364297975275,
+            "bracket_width": null
+          },
+          {
+            "iteration": 5,
+            "x": 0.7390851121274639,
+            "fx": 3.52926228242012e-8,
+            "step_size": 0.000034249784165441,
+            "bracket_width": null
+          },
+          {
+            "iteration": 6,
+            "x": 0.7390851332150012,
+            "fx": 2.667865928174251e-13,
+            "step_size": 2.1087537382946664e-8,
+            "bracket_width": null
+          },
+          {
+            "iteration": 7,
+            "x": 0.7390851332151607,
+            "fx": 0.0,
+            "step_size": 1.5942802633617248e-13,
+            "bracket_width": null
+          }
+        ],
+        "message": "The residual and step met the frozen tolerances."
+      }
+    },
+    {
+      "id": "repeated-bisection",
+      "expectation": "invalid-bracket",
+      "passed": true,
+      "result": {
+        "method": "bisection",
+        "function_id": "repeated",
+        "status": "invalid-bracket",
+        "root": null,
+        "residual": null,
+        "iterations": 0,
+        "function_evaluations": 2,
+        "trace": [],
+        "message": "The endpoints must be ordered and have opposite signs."
+      }
+    },
+    {
+      "id": "repeated-newton",
+      "expectation": "converged",
+      "passed": true,
+      "result": {
+        "method": "newton",
+        "function_id": "repeated",
+        "status": "converged",
+        "root": 1.0000000000582077,
+        "residual": 3.3881317890172014e-21,
+        "iterations": 34,
+        "function_evaluations": 70,
+        "trace": [
+          {
+            "iteration": 0,
+            "x": 2.0,
+            "fx": 1.0,
+            "step_size": null,
+            "bracket_width": null
+          },
+          {
+            "iteration": 1,
+            "x": 1.5,
+            "fx": 0.25,
+            "step_size": 0.5,
+            "bracket_width": null
+          },
+          {
+            "iteration": 2,
+            "x": 1.25,
+            "fx": 0.0625,
+            "step_size": 0.25,
+            "bracket_width": null
+          },
+          {
+            "iteration": 3,
+            "x": 1.125,
+            "fx": 0.015625,
+            "step_size": 0.125,
+            "bracket_width": null
+          },
+          {
+            "iteration": 4,
+            "x": 1.0625,
+            "fx": 0.00390625,
+            "step_size": 0.0625,
+            "bracket_width": null
+          },
+          {
+            "iteration": 5,
+            "x": 1.03125,
+            "fx": 0.0009765625,
+            "step_size": 0.03125,
+            "bracket_width": null
+          },
+          {
+            "iteration": 6,
+            "x": 1.015625,
+            "fx": 0.000244140625,
+            "step_size": 0.015625,
+            "bracket_width": null
+          },
+          {
+            "iteration": 7,
+            "x": 1.0078125,
+            "fx": 0.00006103515625,
+            "step_size": 0.0078125,
+            "bracket_width": null
+          },
+          {
+            "iteration": 8,
+            "x": 1.00390625,
+            "fx": 0.0000152587890625,
+            "step_size": 0.00390625,
+            "bracket_width": null
+          },
+          {
+            "iteration": 9,
+            "x": 1.001953125,
+            "fx": 3.814697265625e-6,
+            "step_size": 0.001953125,
+            "bracket_width": null
+          },
+          {
+            "iteration": 10,
+            "x": 1.0009765625,
+            "fx": 9.5367431640625e-7,
+            "step_size": 0.0009765625,
+            "bracket_width": null
+          },
+          {
+            "iteration": 11,
+            "x": 1.00048828125,
+            "fx": 2.384185791015625e-7,
+            "step_size": 0.00048828125,
+            "bracket_width": null
+          },
+          {
+            "iteration": 12,
+            "x": 1.000244140625,
+            "fx": 5.960464477539063e-8,
+            "step_size": 0.000244140625,
+            "bracket_width": null
+          },
+          {
+            "iteration": 13,
+            "x": 1.0001220703125,
+            "fx": 1.4901161193847656e-8,
+            "step_size": 0.0001220703125,
+            "bracket_width": null
+          },
+          {
+            "iteration": 14,
+            "x": 1.00006103515625,
+            "fx": 3.725290298461914e-9,
+            "step_size": 0.00006103515625,
+            "bracket_width": null
+          },
+          {
+            "iteration": 15,
+            "x": 1.000030517578125,
+            "fx": 9.313225746154785e-10,
+            "step_size": 0.000030517578125,
+            "bracket_width": null
+          },
+          {
+            "iteration": 16,
+            "x": 1.0000152587890625,
+            "fx": 2.3283064365386963e-10,
+            "step_size": 0.0000152587890625,
+            "bracket_width": null
+          },
+          {
+            "iteration": 17,
+            "x": 1.0000076293945312,
+            "fx": 5.820766091346741e-11,
+            "step_size": 7.62939453125e-6,
+            "bracket_width": null
+          },
+          {
+            "iteration": 18,
+            "x": 1.0000038146972656,
+            "fx": 1.4551915228366852e-11,
+            "step_size": 3.814697265625e-6,
+            "bracket_width": null
+          },
+          {
+            "iteration": 19,
+            "x": 1.0000019073486328,
+            "fx": 3.637978807091713e-12,
+            "step_size": 1.9073486328125e-6,
+            "bracket_width": null
+          },
+          {
+            "iteration": 20,
+            "x": 1.0000009536743164,
+            "fx": 9.094947017729282e-13,
+            "step_size": 9.5367431640625e-7,
+            "bracket_width": null
+          },
+          {
+            "iteration": 21,
+            "x": 1.0000004768371582,
+            "fx": 2.2737367544323206e-13,
+            "step_size": 4.76837158203125e-7,
+            "bracket_width": null
+          },
+          {
+            "iteration": 22,
+            "x": 1.000000238418579,
+            "fx": 5.684341886080802e-14,
+            "step_size": 2.384185791015625e-7,
+            "bracket_width": null
+          },
+          {
+            "iteration": 23,
+            "x": 1.0000001192092896,
+            "fx": 1.4210854715202004e-14,
+            "step_size": 1.1920928955078125e-7,
+            "bracket_width": null
+          },
+          {
+            "iteration": 24,
+            "x": 1.0000000596046448,
+            "fx": 3.552713678800501e-15,
+            "step_size": 5.960464477539063e-8,
+            "bracket_width": null
+          },
+          {
+            "iteration": 25,
+            "x": 1.0000000298023224,
+            "fx": 8.881784197001252e-16,
+            "step_size": 2.9802322387695312e-8,
+            "bracket_width": null
+          },
+          {
+            "iteration": 26,
+            "x": 1.0000000149011612,
+            "fx": 2.220446049250313e-16,
+            "step_size": 1.4901161193847656e-8,
+            "bracket_width": null
+          },
+          {
+            "iteration": 27,
+            "x": 1.0000000074505806,
+            "fx": 5.551115123125783e-17,
+            "step_size": 7.450580596923828e-9,
+            "bracket_width": null
+          },
+          {
+            "iteration": 28,
+            "x": 1.0000000037252903,
+            "fx": 1.3877787807814457e-17,
+            "step_size": 3.725290298461914e-9,
+            "bracket_width": null
+          },
+          {
+            "iteration": 29,
+            "x": 1.0000000018626451,
+            "fx": 3.469446951953614e-18,
+            "step_size": 1.862645149230957e-9,
+            "bracket_width": null
+          },
+          {
+            "iteration": 30,
+            "x": 1.0000000009313226,
+            "fx": 8.673617379884035e-19,
+            "step_size": 9.313225746154785e-10,
+            "bracket_width": null
+          },
+          {
+            "iteration": 31,
+            "x": 1.0000000004656613,
+            "fx": 2.168404344971009e-19,
+            "step_size": 4.656612873077393e-10,
+            "bracket_width": null
+          },
+          {
+            "iteration": 32,
+            "x": 1.0000000002328306,
+            "fx": 5.421010862427522e-20,
+            "step_size": 2.3283064365386963e-10,
+            "bracket_width": null
+          },
+          {
+            "iteration": 33,
+            "x": 1.0000000001164153,
+            "fx": 1.3552527156068805e-20,
+            "step_size": 1.1641532182693481e-10,
+            "bracket_width": null
+          },
+          {
+            "iteration": 34,
+            "x": 1.0000000000582077,
+            "fx": 3.3881317890172014e-21,
+            "step_size": 5.820766091346741e-11,
+            "bracket_width": null
+          }
+        ],
+        "message": "The residual and step met the frozen tolerances."
+      }
+    },
+    {
+      "id": "newton-cycle",
+      "expectation": "cycle-detected",
+      "passed": true,
+      "result": {
+        "method": "newton",
+        "function_id": "newton-cycle",
+        "status": "cycle-detected",
+        "root": 0.0,
+        "residual": 2.0,
+        "iterations": 2,
+        "function_evaluations": 5,
+        "trace": [
+          {
+            "iteration": 0,
+            "x": 0.0,
+            "fx": 2.0,
+            "step_size": null,
+            "bracket_width": null
+          },
+          {
+            "iteration": 1,
+            "x": 1.0,
+            "fx": 1.0,
+            "step_size": 1.0,
+            "bracket_width": null
+          },
+          {
+            "iteration": 2,
+            "x": 0.0,
+            "fx": 2.0,
+            "step_size": 1.0,
+            "bracket_width": null
+          }
+        ],
+        "message": "A repeated iterate exposed a numerical cycle."
+      }
+    },
+    {
+      "id": "secant-collapse",
+      "expectation": "collapsed-secant",
+      "passed": true,
+      "result": {
+        "method": "secant",
+        "function_id": "repeated",
+        "status": "collapsed-secant",
+        "root": 2.0,
+        "residual": 1.0,
+        "iterations": 1,
+        "function_evaluations": 2,
+        "trace": [
+          {
+            "iteration": 0,
+            "x": 0.0,
+            "fx": 1.0,
+            "step_size": null,
+            "bracket_width": null
+          },
+          {
+            "iteration": 1,
+            "x": 2.0,
+            "fx": 1.0,
+            "step_size": 2.0,
+            "bracket_width": null
+          }
+        ],
+        "message": "The secant slope denominator collapsed."
+      }
+    }
+  ]
+}

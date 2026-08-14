@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="An interactive, reproducible Rust/WebAssembly laboratory for root-finding convergence and failure modes.">
+    <meta name="theme-color" content="#071611">
+    <title>Mathlab WASM — Root-Finding Under the Microscope</title>
+    <link rel="stylesheet" href="css/style.css">
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to main content</a>
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="Mathlab WASM home">
+        <span class="brand-mark" aria-hidden="true">∿</span>
+        <span>Mathlab WASM</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="#laboratory">Laboratory</a>
+        <a href="#protocol">Protocol</a>
+        <a href="#limits">Limits</a>
+        <a href="https://github.com/lindgreendavid/mathlab-wasm">GitHub</a>
+      </nav>
+    </header>
+
+    <main id="main">
+      <section class="hero" id="top">
+        <div class="hero-copy">
+          <p class="eyebrow">NUMERICAL ANALYSIS · RUST + WEBASSEMBLY</p>
+          <h1>Root-finding under the microscope.</h1>
+          <p class="lede">Fast is not the same as guaranteed. Change the method, starting values, and tolerance—then inspect every iterate, residual, and failure without hiding the assumptions.</p>
+          <div class="hero-actions">
+            <a class="button primary" href="#laboratory">Run an experiment</a>
+            <a class="button secondary" href="https://github.com/lindgreendavid/mathlab-wasm/blob/main/docs/protocol.md">Read the frozen protocol</a>
+          </div>
+        </div>
+        <div class="hero-visual" aria-label="Animated illustration of three numerical paths approaching a root">
+          <svg viewBox="0 0 520 330" role="img" aria-labelledby="hero-title hero-desc">
+            <title id="hero-title">Three numerical paths approaching a function root</title>
+            <desc id="hero-desc">A curve crosses the horizontal axis while bracket, tangent, and secant markers approach the crossing.</desc>
+            <path class="grid-line" d="M40 250H490M80 35V290"></path>
+            <path class="function-line" d="M40 279 C115 269 132 198 196 185 S277 233 323 141 S411 60 486 45"></path>
+            <path class="bracket-line" d="M135 265H402"></path>
+            <circle class="marker marker-a" cx="135" cy="265" r="8"></circle>
+            <circle class="marker marker-b" cx="402" cy="265" r="8"></circle>
+            <path class="tangent-line" d="M233 270L367 87"></path>
+            <circle class="marker marker-c" cx="324" cy="141" r="8"></circle>
+            <circle class="root-mark" cx="348" cy="250" r="11"></circle>
+            <text x="357" y="278">f(x) = 0</text>
+          </svg>
+          <div class="visual-key" aria-hidden="true"><span>bracket</span><span>tangent</span><span>root</span></div>
+        </div>
+      </section>
+
+      <section class="status-strip" aria-label="Research status">
+        <div><span>RELEASE</span><strong>v0.1.0</strong></div>
+        <div><span>METHODS</span><strong>3</strong></div>
+        <div><span>FROZEN CASES</span><strong>7</strong></div>
+        <div><span>ARITHMETIC</span><strong>binary64</strong></div>
+      </section>
+
+      <section class="laboratory section" id="laboratory">
+        <header class="section-heading">
+          <p class="eyebrow">INTERACTIVE EXPERIMENT</p>
+          <h2>One equation. Three different promises.</h2>
+          <p>Choose a frozen function or alter the numerical conditions. The trace is computed by the same Rust core tested in the repository.</p>
+        </header>
+
+        <div class="lab-shell">
+          <form class="controls" id="controls">
+            <div class="control-group">
+              <label for="function">Function</label>
+              <select id="function" name="function">
+                <option value="cubic">x³ − x − 2</option>
+                <option value="cosine">cos(x) − x</option>
+                <option value="repeated">(x − 1)²</option>
+                <option value="newton-cycle">x³ − 2x + 2</option>
+                <option value="flat">x³</option>
+              </select>
+            </div>
+            <div class="control-group">
+              <label for="method">Method</label>
+              <select id="method" name="method">
+                <option value="bisection">Bisection</option>
+                <option value="newton">Newton</option>
+                <option value="secant">Secant</option>
+              </select>
+            </div>
+            <div class="input-pair">
+              <div class="control-group">
+                <label for="first">First value</label>
+                <input id="first" name="first" type="number" value="1" step="any" inputmode="decimal">
+                <small id="first-help">Left bracket endpoint</small>
+              </div>
+              <div class="control-group" id="second-group">
+                <label for="second">Second value</label>
+                <input id="second" name="second" type="number" value="2" step="any" inputmode="decimal">
+                <small id="second-help">Right bracket endpoint</small>
+              </div>
+            </div>
+            <div class="input-pair">
+              <div class="control-group">
+                <label for="tolerance">Tolerance</label>
+                <select id="tolerance" name="tolerance">
+                  <option value="0.000001">10⁻⁶</option>
+                  <option value="0.00000001">10⁻⁸</option>
+                  <option value="0.0000000001" selected>10⁻¹⁰</option>
+                  <option value="0.000000000001">10⁻¹²</option>
+                </select>
+              </div>
+              <div class="control-group">
+                <label for="max-iterations">Iteration limit</label>
+                <input id="max-iterations" name="max-iterations" type="number" min="1" max="500" value="80">
+              </div>
+            </div>
+            <button class="button primary run-button" id="run" type="submit">Run the method</button>
+            <p class="wasm-state" id="wasm-state">Loading the verified Rust engine…</p>
+          </form>
+
+          <div class="experiment-output">
+            <div class="result-head" aria-live="polite" aria-atomic="true">
+              <div>
+                <span class="result-label">STATUS</span>
+                <strong id="result-status">Waiting</strong>
+              </div>
+              <p id="result-message">The first frozen scenario will run when the numerical engine is ready.</p>
+            </div>
+            <dl class="metrics">
+              <div><dt>Estimate</dt><dd id="metric-root">—</dd></div>
+              <div><dt>|f(x)|</dt><dd id="metric-residual">—</dd></div>
+              <div><dt>Iterations</dt><dd id="metric-iterations">—</dd></div>
+              <div><dt>Evaluations</dt><dd id="metric-evaluations">—</dd></div>
+            </dl>
+            <div class="chart-wrap">
+              <div class="chart-heading">
+                <h3>Iteration trace</h3>
+                <div class="chart-toggle" aria-label="Chart quantity">
+                  <button type="button" data-scale="residual" aria-pressed="true">Residual</button>
+                  <button type="button" data-scale="position" aria-pressed="false">Position</button>
+                </div>
+              </div>
+              <svg id="trace-chart" viewBox="0 0 760 370" role="img" aria-labelledby="trace-title trace-desc">
+                <title id="trace-title">Root-finding iteration trace</title>
+                <desc id="trace-desc">Run an experiment to display its numerical trace.</desc>
+              </svg>
+              <p class="chart-note" id="chart-note">Residual uses a logarithmic vertical scale; zero is shown at machine epsilon.</p>
+            </div>
+            <div class="trace-table-wrap" tabindex="0" aria-label="Scrollable iteration table">
+              <table>
+                <caption>Exact values returned by the Rust solver</caption>
+                <thead><tr><th>n</th><th>x</th><th>f(x)</th><th>Step</th><th>Bracket</th></tr></thead>
+                <tbody id="trace-body"><tr><td colspan="5">No trace yet.</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="comparison section" id="protocol">
+        <header class="section-heading">
+          <p class="eyebrow">READ THE GUARANTEE FIRST</p>
+          <h2>The methods answer different questions.</h2>
+        </header>
+        <div class="method-grid">
+          <article>
+            <span class="method-number">01</span>
+            <h3>Bisection</h3>
+            <p>Preserves a sign-changing bracket for a continuous function and halves its width. Slow, but geometrically inspectable.</p>
+            <dl><div><dt>Needs</dt><dd>Opposite endpoint signs</dd></div><div><dt>Shows</dt><dd>Certified bracket width</dd></div></dl>
+          </article>
+          <article>
+            <span class="method-number">02</span>
+            <h3>Newton</h3>
+            <p>Uses the local tangent. Quadratic convergence is local near a simple root—not a promise for arbitrary starting values.</p>
+            <dl><div><dt>Needs</dt><dd>Analytic derivative</dd></div><div><dt>Can fail</dt><dd>Cycle or flat derivative</dd></div></dl>
+          </article>
+          <article>
+            <span class="method-number">03</span>
+            <h3>Secant</h3>
+            <p>Approximates the derivative from two iterates. It saves derivative work but can lose its slope information.</p>
+            <dl><div><dt>Needs</dt><dd>Two starting values</dd></div><div><dt>Can fail</dt><dd>Collapsed denominator</dd></div></dl>
+          </article>
+        </div>
+      </section>
+
+      <section class="failure-gallery section">
+        <header class="section-heading">
+          <p class="eyebrow">FROZEN ADVERSARIAL CASES</p>
+          <h2>Failure is part of the result.</h2>
+          <p>These cases were selected before executing the committed benchmark report. They demonstrate possibility, not prevalence.</p>
+        </header>
+        <div class="failure-list">
+          <button type="button" class="case-card" data-case="newton-cycle">
+            <span>NEWTON CYCLE</span><strong>0 → 1 → 0</strong><small>x³ − 2x + 2, x₀ = 0</small>
+          </button>
+          <button type="button" class="case-card" data-case="repeated-bisection">
+            <span>NO SIGN CHANGE</span><strong>root still exists</strong><small>(x − 1)² on [0, 2]</small>
+          </button>
+          <button type="button" class="case-card" data-case="secant-collapse">
+            <span>EQUAL VALUES</span><strong>slope collapses</strong><small>(x − 1)² from 0 and 2</small>
+          </button>
+        </div>
+      </section>
+
+      <section class="boundaries section" id="limits">
+        <div>
+          <p class="eyebrow">EVIDENCE BOUNDARY</p>
+          <h2>What v0.1 supports—and what it does not.</h2>
+        </div>
+        <div class="boundary-columns">
+          <article>
+            <h3>Supported</h3>
+            <ul>
+              <li>Deterministic behavior for seven frozen method–scenario runs.</li>
+              <li>A certified bisection half-width when its bracket assumptions hold.</li>
+              <li>Explicit detection of the selected cycle and denominator failures.</li>
+              <li>One Rust implementation shared by tests, report, and browser.</li>
+            </ul>
+          </article>
+          <article>
+            <h3>Not supported</h3>
+            <ul>
+              <li>A universal ranking of root-finding algorithms.</li>
+              <li>Performance claims for real scientific workloads.</li>
+              <li>Proof that a small residual always means small root error.</li>
+              <li>Replacement of mature numerical libraries or interval solvers.</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="sources section">
+        <header class="section-heading">
+          <p class="eyebrow">PRIMARY SOURCES</p>
+          <h2>Follow the guarantee to its source.</h2>
+        </header>
+        <div class="source-links">
+          <a href="https://dlmf.nist.gov/3.8"><span>METHODS</span><strong>NIST DLMF §3.8</strong><b aria-hidden="true">↗</b></a>
+          <a href="https://doi.org/10.1093/comjnl/14.4.422"><span>SAFEGUARDS</span><strong>Brent (1971)</strong><b aria-hidden="true">↗</b></a>
+          <a href="https://doi.org/10.1109/IEEESTD.2019.8766229"><span>ARITHMETIC</span><strong>IEEE 754-2019</strong><b aria-hidden="true">↗</b></a>
+          <a href="https://github.com/lindgreendavid/mathlab-wasm/blob/main/reports/v0.1-root-finding.json"><span>RESULT</span><strong>Machine-readable report</strong><b aria-hidden="true">↗</b></a>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <a class="brand" href="#top"><span class="brand-mark" aria-hidden="true">∿</span><span>Mathlab WASM</span></a>
+      <p>Known mathematics · explicit assumptions · inspectable computation</p>
+      <a href="https://github.com/lindgreendavid">David Lindgreen on GitHub</a>
+    </footer>
+
+    <script type="module" src="js/app.js"></script>
+  </body>
+</html>
