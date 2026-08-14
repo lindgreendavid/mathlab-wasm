@@ -2,6 +2,20 @@
 
 All notable changes follow Semantic Versioning.
 
+## [1.0.0] - 2026-08-14
+
+### Added
+
+- Frozen residual, forward-error, and conditioning protocol with five prespecified cases.
+- Deterministic Rust report and regression tests for scaling, a simple root, and a repeated root.
+- Interactive residual microscope backed directly by the committed machine-readable result.
+- Higham accuracy-and-stability source and explicit perturbation-model boundaries.
+
+### Changed
+
+- Product, citation, website, research report, release audit, and CI metadata now describe the
+  stable v1.0.0 research product while preserving the v0.1 and v0.2 studies unchanged.
+
 ## [0.2.0] - 2026-08-14
 
 ### Added

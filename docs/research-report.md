@@ -1,5 +1,26 @@
 # Root-Finding Under the Microscope — versioned reports
 
+## v1.0 residual and conditioning diagnostic
+
+The v1.0 protocol was committed as `97b21a2` before the conditioning implementation or report was
+created. All five prespecified cases and all three cross-case checks pass. Exact binary64 values and
+machine-readable decisions are recorded in
+[`reports/v1.0-conditioning.json`](../reports/v1.0-conditioning.json).
+
+| Frozen case | Absolute residual | Forward error | `1/|f′(r)|` | Interpretation |
+| --- | ---: | ---: | ---: | --- |
+| `10⁻⁸(x−1)` | 1.00 × 10⁻¹⁴ | 1.00 × 10⁻⁶ | 1.00 × 10⁸ | small residual, high sensitivity |
+| `x−1` | 1.00 × 10⁻⁶ | 1.00 × 10⁻⁶ | 1 | residual tracks error |
+| `10⁸(x−1)` | 1.00 × 10² | 1.00 × 10⁻⁶ | 1.00 × 10⁻⁸ | large residual, low sensitivity |
+| cubic near its simple root | 5.94 × 10⁻⁸ | 1.00 × 10⁻⁸ | 1.68 × 10⁻¹ | local estimate agrees within frozen tolerance |
+| `(x−1)²` | 1.00 × 10⁻¹⁰ | 1.00 × 10⁻⁵ | unavailable | simple-root diagnostic is singular |
+
+The linear comparison isolates equation scaling: candidate and root are identical across the three
+cases, while residuals span sixteen orders of magnitude. This establishes only the intended
+counterexample to reading a raw residual in isolation. The cubic result is local and first-order.
+The repeated-root result shows why a finite simple-root diagnostic must not be fabricated when the
+derivative vanishes.
+
 ## v0.2 safeguarded-method extension
 
 The v0.2 protocol was committed as `e4c6f222c22f163b909503d05ead800394757f26` before the new

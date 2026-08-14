@@ -1,0 +1,122 @@
+{
+  "schema_version": "1.0.0",
+  "product_version": "1.0.0",
+  "protocol": "docs/protocol-v1.0.md",
+  "protocol_commit": "97b21a2",
+  "arithmetic": "IEEE-754 binary64 via Rust f64",
+  "perturbation_model": "absolute additive perturbation to the function value",
+  "interpretation": "Five prespecified demonstrations; not a prevalence estimate, rigorous enclosure, or universal stopping rule.",
+  "global_checks": {
+    "linear_forward_errors_identical": true,
+    "residual_order_flat_unit_steep": true,
+    "condition_order_flat_unit_steep": true
+  },
+  "all_expectations_met": true,
+  "cases": [
+    {
+      "id": "flat-scaled-linear",
+      "equation": "1e-8 * (x - 1)",
+      "candidate": 1.000001,
+      "reference_root": 1.0,
+      "residual": 9.999999999177333e-15,
+      "forward_error": 9.999999999177334e-7,
+      "derivative_magnitude_at_root": 1e-8,
+      "absolute_condition_number": 100000000.0,
+      "first_order_error_estimate": 9.999999999177334e-7,
+      "classification": "small-residual-high-sensitivity",
+      "interpretation": "The equation scale makes the residual tiny although the candidate is no closer to the root.",
+      "checks": {
+        "finite_required_values": true,
+        "classification_matches": true,
+        "linear_estimate_matches_forward_error": true,
+        "cubic_relative_estimate_error_below_1e_7": null,
+        "repeated_root_contract_met": null
+      },
+      "passed": true
+    },
+    {
+      "id": "unit-linear",
+      "equation": "x - 1",
+      "candidate": 1.000001,
+      "reference_root": 1.0,
+      "residual": 9.999999999177334e-7,
+      "forward_error": 9.999999999177334e-7,
+      "derivative_magnitude_at_root": 1.0,
+      "absolute_condition_number": 1.0,
+      "first_order_error_estimate": 9.999999999177334e-7,
+      "classification": "residual-tracks-error",
+      "interpretation": "For this unit-scaled linear equation, residual and forward error coincide.",
+      "checks": {
+        "finite_required_values": true,
+        "classification_matches": true,
+        "linear_estimate_matches_forward_error": true,
+        "cubic_relative_estimate_error_below_1e_7": null,
+        "repeated_root_contract_met": null
+      },
+      "passed": true
+    },
+    {
+      "id": "steep-scaled-linear",
+      "equation": "1e8 * (x - 1)",
+      "candidate": 1.000001,
+      "reference_root": 1.0,
+      "residual": 99.99999999177334,
+      "forward_error": 9.999999999177334e-7,
+      "derivative_magnitude_at_root": 100000000.0,
+      "absolute_condition_number": 1e-8,
+      "first_order_error_estimate": 9.999999999177334e-7,
+      "classification": "large-residual-low-sensitivity",
+      "interpretation": "The equation scale makes the residual large although the candidate has the same root error.",
+      "checks": {
+        "finite_required_values": true,
+        "classification_matches": true,
+        "linear_estimate_matches_forward_error": true,
+        "cubic_relative_estimate_error_below_1e_7": null,
+        "repeated_root_contract_met": null
+      },
+      "passed": true
+    },
+    {
+      "id": "simple-cubic-local",
+      "equation": "x^3 - x - 2",
+      "candidate": 1.5213797168045675,
+      "reference_root": 1.5213797068045676,
+      "residual": 5.943788661255667e-8,
+      "forward_error": 9.99999993922529e-9,
+      "derivative_magnitude_at_root": 5.943788636830256,
+      "absolute_condition_number": 0.1682428600848241,
+      "first_order_error_estimate": 1.000000004109401e-8,
+      "classification": "local-linearization-valid",
+      "interpretation": "Near this simple root, the derivative-based first-order estimate tracks the forward error.",
+      "checks": {
+        "finite_required_values": true,
+        "classification_matches": true,
+        "linear_estimate_matches_forward_error": null,
+        "cubic_relative_estimate_error_below_1e_7": true,
+        "repeated_root_contract_met": null
+      },
+      "passed": true
+    },
+    {
+      "id": "repeated-root",
+      "equation": "(x - 1)^2",
+      "candidate": 1.00001,
+      "reference_root": 1.0,
+      "residual": 1.0000000000131024e-10,
+      "forward_error": 0.000010000000000065512,
+      "derivative_magnitude_at_root": 0.0,
+      "absolute_condition_number": null,
+      "first_order_error_estimate": null,
+      "classification": "simple-root-diagnostic-unavailable",
+      "interpretation": "The derivative vanishes at the multiple root, so the simple-root linearization must not be reported as a finite bound.",
+      "checks": {
+        "finite_required_values": true,
+        "classification_matches": true,
+        "linear_estimate_matches_forward_error": null,
+        "cubic_relative_estimate_error_below_1e_7": null,
+        "repeated_root_contract_met": true
+      },
+      "passed": true
+    }
+  ]
+}

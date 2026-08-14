@@ -2,18 +2,20 @@
 
 **[Open the interactive laboratory →](https://lindgreendavid.github.io/mathlab-wasm/)**
 
-[Read the v0.2 protocol](docs/protocol-v0.2.md) · [Inspect the v0.2 results](reports/v0.2-safeguarded-root-finding.json) · [View releases](https://github.com/lindgreendavid/mathlab-wasm/releases)
+[Read the v1.0 protocol](docs/protocol-v1.0.md) · [Inspect the v1.0 results](reports/v1.0-conditioning.json) · [View releases](https://github.com/lindgreendavid/mathlab-wasm/releases)
 
 An inspectable Rust/WebAssembly laboratory for understanding when one-dimensional root-finding
 methods converge, what their stopping rules certify, and how they fail. The laboratory compares
 bisection, Newton, secant, and a bracket-preserving Brent–Dekker-style hybrid across separately
-frozen versioned suites.
+frozen versioned suites. The v1.0 residual microscope adds forward-error and conditioning
+diagnostics without altering the earlier studies.
 
 ## Status
 
-**Research product v0.2.0 — prespecified safeguarded-method extension.** The unchanged v0.1
-foundation remains reproducible. This is an educational verification of established
-numerical-analysis behavior, not novel mathematics or a general solver ranking.
+**Stable research product v1.0.0 — prespecified conditioning diagnostic.** The unchanged v0.1 and
+v0.2 studies remain reproducible. This is an educational verification of established
+numerical-analysis behavior, not novel mathematics, a rigorous root enclosure, or a general solver
+ranking.
 
 ## Fixed question
 
@@ -23,6 +25,17 @@ numerical-analysis behavior, not novel mathematics or a general solver ranking.
 
 The primary endpoint is the solver status. Secondary endpoints are absolute residual, iteration
 count, function-evaluation count, step size, and—where defined—bracket width.
+
+The v1.0 extension asks a second frozen question:
+
+> For prespecified scalar equations and candidate roots, when does a small absolute residual track
+> absolute forward error, and when can scaling or root multiplicity make the residual misleading if
+> interpreted alone?
+
+Its primary endpoint is the prespecified diagnostic classification. Secondary endpoints are
+absolute residual, absolute forward error, derivative magnitude at the reference root, the
+simple-root absolute condition number for additive function-value perturbations, and the local
+first-order error estimate.
 
 ## What v0.1 demonstrates
 
@@ -53,12 +66,27 @@ before the new implementation and result run. Its dated amendment transparently 
 cross-platform transcendental results are compared within a `16 × ε`-scaled allowance rather than
 claimed to be byte-identical.
 
+## What v1.0 adds
+
+- Three algebraically equivalent linear roots with function scales `10⁻⁸`, `1`, and `10⁸` retain
+  the same forward error while their raw residuals span sixteen orders of magnitude.
+- The explicitly defined absolute condition number `1/|f′(r)|` explains that scale dependence for
+  additive function-value perturbations.
+- A simple cubic case verifies the frozen local first-order approximation tolerance.
+- A repeated-root case returns no finite simple-root condition or estimate because `f′(r)=0`.
+- The interactive residual microscope reads the committed Rust result; it does not recreate the
+  scientific quantities in JavaScript.
+
+The v1.0 protocol was frozen at commit `97b21a2` before implementation or result generation. All
+prespecified acceptance checks pass in the committed machine-readable report.
+
 ## Reproduce
 
 ```bash
 cargo test --locked
 cargo run --example generate_report -- reports/v0.1-root-finding.json
 cargo run --example generate_v0_2_report -- reports/v0.2-safeguarded-root-finding.json
+cargo run --example generate_v1_report -- reports/v1.0-conditioning.json
 wasm-pack build --target web --out-dir web/pkg
 python3 scripts/verify_report.py
 python3 scripts/verify_web.py
@@ -77,14 +105,18 @@ Then open `http://127.0.0.1:8080/`.
 | Path | Purpose |
 | --- | --- |
 | `src/lib.rs` | Rust solver implementations, trace schema, and WASM export |
+| `src/conditioning.rs` | Frozen v1.0 cases, diagnostics, checks, and report schema |
 | `tests/solver_tests.rs` | Convergence, bound, and failure-mode regression tests |
+| `tests/conditioning_tests.rs` | Scaling, multiplicity, and local-linearization regression tests |
 | `docs/protocol.md` | Frozen question, hypotheses, endpoints, tolerances, and exclusions |
 | `docs/protocol-v0.2.md` | Pre-implementation safeguarded-method protocol |
+| `docs/protocol-v1.0.md` | Pre-implementation residual and conditioning protocol |
 | `docs/methods.md` | Algorithms, stopping rules, numerical safeguards, and limitations |
 | `docs/sources.md` | Primary-source registry and claim-to-source map |
 | `docs/v0.1-release-audit.md` | Release gate, completed checks, and remaining limits |
 | `reports/v0.1-root-finding.json` | Machine-readable benchmark result |
 | `reports/v0.2-safeguarded-root-finding.json` | Machine-readable v0.2 result and acceptance checks |
+| `reports/v1.0-conditioning.json` | Machine-readable v1.0 diagnostic and acceptance checks |
 | `web/` | Accessible interactive laboratory |
 
 ## Evidence boundaries
