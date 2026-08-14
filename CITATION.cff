@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: "If you use this educational research product, please cite it as follows."
+title: "Mathlab WASM: Root-Finding Under the Microscope"
+type: software
+authors:
+  - family-names: Lindgreen
+    given-names: David
+version: 0.1.0
+date-released: 2026-08-14
+license: MIT
+repository-code: "https://github.com/lindgreendavid/mathlab-wasm"
+url: "https://lindgreendavid.github.io/mathlab-wasm/"
+keywords:
+  - numerical analysis
+  - root finding
+  - WebAssembly
+  - reproducible research
