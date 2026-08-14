@@ -13,6 +13,16 @@ test("loads the WASM laboratory and changes scenarios", async ({ page }) => {
   await expect(page.getByText("Cycle detected", { exact: true })).toBeVisible();
 });
 
+test("shows safeguarded interpolation and bisection from the Rust trace", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.getByText("Converged", { exact: true })).toBeVisible();
+  await page.getByRole("button", { name: /SAFEGUARD ACTIVE/ }).click();
+  await expect(page.getByLabel("Method", { exact: true })).toHaveValue("safeguarded");
+  await expect(page.getByLabel("Function", { exact: true })).toHaveValue("skewed");
+  await expect(page.getByText("inverse quadratic", { exact: true }).first()).toBeVisible();
+  await expect(page.getByText("bisection", { exact: true }).first()).toBeVisible();
+});
+
 test("has no automatically detectable WCAG A/AA violations", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByText("Converged", { exact: true })).toBeVisible();

@@ -20,6 +20,8 @@ REQUIRED_HTML = (
     'id="tolerance"',
     'id="run"',
     'id="trace-chart"',
+    '<option value="safeguarded">',
+    'data-case="safeguarded-skewed"',
     'aria-live="polite"',
     "EVIDENCE BOUNDARY",
     "PRIMARY SOURCES",
@@ -28,6 +30,8 @@ for needle in REQUIRED_HTML:
     assert needle in HTML, f"missing HTML contract: {needle}"
 
 assert "solve_json" in JS
+assert 'methods.safeguarded = methods.bisection' in JS
+assert "step.step_kind" in JS
 assert "requestAnimationFrame" not in JS, "motion must remain user-driven"
 assert "@media (prefers-reduced-motion: reduce)" in CSS
 assert "overflow-x: hidden" not in CSS, "do not conceal layout overflow"

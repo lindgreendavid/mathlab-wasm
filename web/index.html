@@ -31,7 +31,7 @@
           <p class="lede">Fast is not the same as guaranteed. Change the method, starting values, and tolerance—then inspect every iterate, residual, and failure without hiding the assumptions.</p>
           <div class="hero-actions">
             <a class="button primary" href="#laboratory">Run an experiment</a>
-            <a class="button secondary" href="https://github.com/lindgreendavid/mathlab-wasm/blob/main/docs/protocol.md">Read the frozen protocol</a>
+            <a class="button secondary" href="https://github.com/lindgreendavid/mathlab-wasm/blob/main/docs/protocol-v0.2.md">Read the v0.2 protocol</a>
           </div>
         </div>
         <div class="hero-visual" aria-label="Animated illustration of three numerical paths approaching a root">
@@ -53,16 +53,16 @@
       </section>
 
       <section class="status-strip" aria-label="Research status">
-        <div><span>RELEASE</span><strong>v0.1.0</strong></div>
-        <div><span>METHODS</span><strong>3</strong></div>
-        <div><span>FROZEN CASES</span><strong>7</strong></div>
+        <div><span>RELEASE</span><strong>v0.2.0</strong></div>
+        <div><span>METHODS</span><strong>4</strong></div>
+        <div><span>FROZEN CASES</span><strong>12</strong></div>
         <div><span>ARITHMETIC</span><strong>binary64</strong></div>
       </section>
 
       <section class="laboratory section" id="laboratory">
         <header class="section-heading">
           <p class="eyebrow">INTERACTIVE EXPERIMENT</p>
-          <h2>One equation. Three different promises.</h2>
+          <h2>One equation. Four different promises.</h2>
           <p>Choose a frozen function or alter the numerical conditions. The trace is computed by the same Rust core tested in the repository.</p>
         </header>
 
@@ -76,6 +76,7 @@
                 <option value="repeated">(x − 1)²</option>
                 <option value="newton-cycle">x³ − 2x + 2</option>
                 <option value="flat">x³</option>
+                <option value="skewed">x¹⁰ − 1</option>
               </select>
             </div>
             <div class="control-group">
@@ -84,6 +85,7 @@
                 <option value="bisection">Bisection</option>
                 <option value="newton">Newton</option>
                 <option value="secant">Secant</option>
+                <option value="safeguarded">Safeguarded hybrid</option>
               </select>
             </div>
             <div class="input-pair">
@@ -148,8 +150,8 @@
             <div class="trace-table-wrap" tabindex="0" aria-label="Scrollable iteration table">
               <table>
                 <caption>Exact values returned by the Rust solver</caption>
-                <thead><tr><th>n</th><th>x</th><th>f(x)</th><th>Step</th><th>Bracket</th></tr></thead>
-                <tbody id="trace-body"><tr><td colspan="5">No trace yet.</td></tr></tbody>
+                <thead><tr><th>n</th><th>x</th><th>f(x)</th><th>Step size</th><th>Bracket</th><th>Accepted move</th></tr></thead>
+                <tbody id="trace-body"><tr><td colspan="6">No trace yet.</td></tr></tbody>
               </table>
             </div>
           </div>
@@ -180,6 +182,12 @@
             <p>Approximates the derivative from two iterates. It saves derivative work but can lose its slope information.</p>
             <dl><div><dt>Needs</dt><dd>Two starting values</dd></div><div><dt>Can fail</dt><dd>Collapsed denominator</dd></div></dl>
           </article>
+          <article>
+            <span class="method-number">04</span>
+            <h3>Safeguarded</h3>
+            <p>Proposes secant or inverse-quadratic steps but bisects when the proposal leaves the protected region or stalls.</p>
+            <dl><div><dt>Needs</dt><dd>Continuous sign-changing bracket</dd></div><div><dt>Shows</dt><dd>Accepted move and retained bracket</dd></div></dl>
+          </article>
         </div>
       </section>
 
@@ -199,22 +207,26 @@
           <button type="button" class="case-card" data-case="secant-collapse">
             <span>EQUAL VALUES</span><strong>slope collapses</strong><small>(x − 1)² from 0 and 2</small>
           </button>
+          <button type="button" class="case-card" data-case="safeguarded-skewed">
+            <span>SAFEGUARD ACTIVE</span><strong>fast step or fallback?</strong><small>x¹⁰ − 1 on [0, 2]</small>
+          </button>
         </div>
       </section>
 
       <section class="boundaries section" id="limits">
         <div>
           <p class="eyebrow">EVIDENCE BOUNDARY</p>
-          <h2>What v0.1 supports—and what it does not.</h2>
+          <h2>What v0.2 supports—and what it does not.</h2>
         </div>
         <div class="boundary-columns">
           <article>
             <h3>Supported</h3>
             <ul>
-              <li>Deterministic behavior for seven frozen method–scenario runs.</li>
+              <li>Deterministic behavior for twelve runs across two separately frozen protocols.</li>
               <li>A certified bisection half-width when its bracket assumptions hold.</li>
               <li>Explicit detection of the selected cycle and denominator failures.</li>
               <li>One Rust implementation shared by tests, report, and browser.</li>
+              <li>Preserved brackets and explicit interpolation/fallback labels in five v0.2 cases.</li>
             </ul>
           </article>
           <article>
@@ -238,7 +250,7 @@
           <a href="https://dlmf.nist.gov/3.8"><span>METHODS</span><strong>NIST DLMF §3.8</strong><b aria-hidden="true">↗</b></a>
           <a href="https://doi.org/10.1093/comjnl/14.4.422"><span>SAFEGUARDS</span><strong>Brent (1971)</strong><b aria-hidden="true">↗</b></a>
           <a href="https://doi.org/10.1109/IEEESTD.2019.8766229"><span>ARITHMETIC</span><strong>IEEE 754-2019</strong><b aria-hidden="true">↗</b></a>
-          <a href="https://github.com/lindgreendavid/mathlab-wasm/blob/main/reports/v0.1-root-finding.json"><span>RESULT</span><strong>Machine-readable report</strong><b aria-hidden="true">↗</b></a>
+          <a href="https://github.com/lindgreendavid/mathlab-wasm/blob/main/reports/v0.2-safeguarded-root-finding.json"><span>RESULT</span><strong>Machine-readable v0.2 report</strong><b aria-hidden="true">↗</b></a>
         </div>
       </section>
     </main>

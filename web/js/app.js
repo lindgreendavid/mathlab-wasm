@@ -31,7 +31,12 @@ const presets = {
   repeated: { bisection: [0, 2], newton: [2, 0], secant: [0, 2] },
   "newton-cycle": { bisection: [-2, -1], newton: [0, 0], secant: [-2, -1] },
   flat: { bisection: [-1, 1], newton: [0.5, 0], secant: [-1, 0.5] },
+  skewed: { bisection: [0, 2], newton: [1.2, 0], secant: [0, 2] },
 };
+
+Object.values(presets).forEach((methods) => {
+  methods.safeguarded = methods.bisection;
+});
 
 const statusLabels = {
   converged: "Converged",
@@ -61,8 +66,9 @@ function updateInputMeaning(applyPreset = true) {
   const usesSecond = method !== "newton";
   elements.secondGroup.hidden = !usesSecond;
   elements.second.disabled = !usesSecond;
-  elements.firstHelp.textContent = method === "bisection" ? "Left bracket endpoint" : method === "newton" ? "Initial iterate x₀" : "First secant iterate x₀";
-  elements.secondHelp.textContent = method === "bisection" ? "Right bracket endpoint" : "Second secant iterate x₁";
+  const usesBracket = method === "bisection" || method === "safeguarded";
+  elements.firstHelp.textContent = usesBracket ? "Left bracket endpoint" : method === "newton" ? "Initial iterate x₀" : "First secant iterate x₀";
+  elements.secondHelp.textContent = usesBracket ? "Right bracket endpoint" : "Second secant iterate x₁";
   if (applyPreset) {
     const [first, second] = presets[functionId][method];
     elements.first.value = String(first);
@@ -137,12 +143,13 @@ function renderChart(trace) {
 
 function renderTable(trace) {
   if (!trace.length) {
-    elements.traceBody.innerHTML = '<tr><td colspan="5">The method rejected the inputs before an iterate was created.</td></tr>';
+    elements.traceBody.innerHTML = '<tr><td colspan="6">The method rejected the inputs before an iterate was created.</td></tr>';
     return;
   }
   elements.traceBody.replaceChildren(...trace.map((step) => {
     const row = document.createElement("tr");
-    [step.iteration, formatNumber(step.x), formatNumber(step.fx), formatNumber(step.step_size), formatNumber(step.bracket_width)].forEach((value) => {
+    const move = step.step_kind ? step.step_kind.replace("inverse-quadratic", "inverse quadratic") : "—";
+    [step.iteration, formatNumber(step.x), formatNumber(step.fx), formatNumber(step.step_size), formatNumber(step.bracket_width), move].forEach((value) => {
       const cell = document.createElement("td");
       cell.textContent = String(value);
       row.append(cell);
@@ -203,9 +210,12 @@ document.querySelectorAll("[data-case]").forEach((button) => {
     } else if (caseId === "repeated-bisection") {
       elements.functionSelect.value = "repeated";
       elements.method.value = "bisection";
-    } else {
+    } else if (caseId === "secant-collapse") {
       elements.functionSelect.value = "repeated";
       elements.method.value = "secant";
+    } else {
+      elements.functionSelect.value = "skewed";
+      elements.method.value = "safeguarded";
     }
     updateInputMeaning(true);
     runExperiment();

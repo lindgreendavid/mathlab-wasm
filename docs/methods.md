@@ -16,6 +16,12 @@ The secant method avoids analytic derivatives by using two function values. It c
 than bisection near a regular root, but the denominator can collapse. That failure is an observed
 status rather than an unchecked division.
 
+The safeguarded method keeps a sign-changing bracket while proposing secant or inverse-quadratic
+interpolation. A proposal is accepted only when it lies inside the protected portion of the bracket
+and makes sufficient progress relative to recent steps; otherwise the method bisects. This is an
+independently written Brent–Dekker-style teaching implementation, not a claim of bitwise equivalence
+with Netlib or SciPy.
+
 ## Stopping rules
 
 A solver can satisfy a small residual while the approximation remains far from an ill-conditioned

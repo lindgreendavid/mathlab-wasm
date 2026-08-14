@@ -2,18 +2,18 @@
 
 **[Open the interactive laboratory →](https://lindgreendavid.github.io/mathlab-wasm/)**
 
-[Read the frozen protocol](docs/protocol.md) · [Inspect the v0.1 results](reports/v0.1-root-finding.json) · [View releases](https://github.com/lindgreendavid/mathlab-wasm/releases)
+[Read the v0.2 protocol](docs/protocol-v0.2.md) · [Inspect the v0.2 results](reports/v0.2-safeguarded-root-finding.json) · [View releases](https://github.com/lindgreendavid/mathlab-wasm/releases)
 
 An inspectable Rust/WebAssembly laboratory for understanding when one-dimensional root-finding
-methods converge, what their stopping rules certify, and how they fail. The first release compares
-bisection, Newton, and secant iterations on a frozen suite of simple roots, repeated roots, flat
-derivatives, and an explicit Newton two-cycle.
+methods converge, what their stopping rules certify, and how they fail. The laboratory compares
+bisection, Newton, secant, and a bracket-preserving Brent–Dekker-style hybrid across separately
+frozen versioned suites.
 
 ## Status
 
-**Research product v0.1.0 — frozen methods and deterministic benchmark suite.** This is an
-educational reproduction of established numerical-analysis results, not a claim of novel
-mathematics and not a general ranking of solvers.
+**Research product v0.2.0 — prespecified safeguarded-method extension.** The unchanged v0.1
+foundation remains reproducible. This is an educational verification of established
+numerical-analysis behavior, not novel mathematics or a general solver ranking.
 
 ## Fixed question
 
@@ -38,11 +38,25 @@ count, function-evaluation count, step size, and—where defined—bracket width
 These are bounded demonstrations. They do not establish performance on arbitrary functions,
 finite-precision platforms, or production solver libraries.
 
+## What v0.2 adds
+
+- A sign-changing bracket is retained while secant and inverse-quadratic steps are proposed.
+- Unsafe or insufficiently progressive interpolation falls back visibly to bisection.
+- The skewed `x¹⁰−1` case exercises secant, inverse-quadratic, and bisection steps in one trace.
+- Every recorded v0.2 bracket contains its fixed reference root and has non-increasing width within
+  the frozen floating-point comparison allowance.
+- The exact endpoint and invalid-bracket cases keep successful termination distinct from rejected
+  assumptions.
+
+The v0.2 protocol was published at commit `e4c6f222c22f163b909503d05ead800394757f26`
+before the new implementation and result run.
+
 ## Reproduce
 
 ```bash
 cargo test --locked
 cargo run --example generate_report -- reports/v0.1-root-finding.json
+cargo run --example generate_v0_2_report -- reports/v0.2-safeguarded-root-finding.json
 wasm-pack build --target web --out-dir web/pkg
 python3 scripts/verify_report.py
 python3 scripts/verify_web.py
@@ -63,10 +77,12 @@ Then open `http://127.0.0.1:8080/`.
 | `src/lib.rs` | Rust solver implementations, trace schema, and WASM export |
 | `tests/solver_tests.rs` | Convergence, bound, and failure-mode regression tests |
 | `docs/protocol.md` | Frozen question, hypotheses, endpoints, tolerances, and exclusions |
+| `docs/protocol-v0.2.md` | Pre-implementation safeguarded-method protocol |
 | `docs/methods.md` | Algorithms, stopping rules, numerical safeguards, and limitations |
 | `docs/sources.md` | Primary-source registry and claim-to-source map |
 | `docs/v0.1-release-audit.md` | Release gate, completed checks, and remaining limits |
 | `reports/v0.1-root-finding.json` | Machine-readable benchmark result |
+| `reports/v0.2-safeguarded-root-finding.json` | Machine-readable v0.2 result and acceptance checks |
 | `web/` | Accessible interactive laboratory |
 
 ## Evidence boundaries
@@ -77,6 +93,8 @@ Then open `http://127.0.0.1:8080/`.
 - A small residual alone need not imply a small root error for an ill-conditioned zero.
 - Iteration and evaluation counts depend on the exact stopping rules and safeguards documented here.
 - The methods are pedagogical implementations and do not replace mature numerical libraries.
+- “Brent–Dekker-style” identifies an algorithm family and does not claim bitwise equivalence with
+  Netlib, SciPy, or another production implementation.
 
 ## Primary sources
 

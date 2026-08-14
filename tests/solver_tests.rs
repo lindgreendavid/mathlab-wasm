@@ -1,4 +1,4 @@
-use mathlab_wasm::{bisection, newton, secant, Options, Status};
+use mathlab_wasm::{bisection, newton, safeguarded, secant, Options, Status, StepKind};
 
 const ROOT_CUBIC: f64 = 1.521_379_706_804_567_6;
 
@@ -76,4 +76,64 @@ fn iteration_budget_is_enforced() {
         },
     );
     assert_eq!(result.status, Status::MaxIterations);
+}
+
+fn assert_brackets_are_certificates(result: &mathlab_wasm::SolveResult, root: f64) {
+    let mut previous_width = f64::INFINITY;
+    for step in &result.trace {
+        let left = step.bracket_left.expect("safeguarded trace left endpoint");
+        let right = step
+            .bracket_right
+            .expect("safeguarded trace right endpoint");
+        let width = step.bracket_width.expect("safeguarded trace width");
+        assert!(left <= root && root <= right);
+        assert!((width - (right - left)).abs() <= 16.0 * f64::EPSILON * (1.0 + width));
+        assert!(width <= previous_width + 16.0 * f64::EPSILON * (1.0 + previous_width));
+        previous_width = width;
+    }
+}
+
+#[test]
+fn safeguarded_solver_preserves_brackets_for_standard_cases() {
+    let cases = [
+        ("cubic", 1.0, 2.0, ROOT_CUBIC),
+        ("cosine", 0.0, 1.0, 0.739_085_133_215_160_7),
+    ];
+    for (function_id, left, right, root) in cases {
+        let result = safeguarded(function_id, left, right, Options::default());
+        assert_eq!(result.status, Status::Converged);
+        assert!((result.root.unwrap() - root).abs() < 1e-9);
+        assert_brackets_are_certificates(&result, root);
+    }
+}
+
+#[test]
+fn safeguarded_solver_exposes_interpolation_and_fallback() {
+    let result = safeguarded("skewed", 0.0, 2.0, Options::default());
+    assert_eq!(result.status, Status::Converged);
+    assert!((result.root.unwrap() - 1.0).abs() < 1e-9);
+    assert!(result.trace.iter().any(|step| matches!(
+        step.step_kind,
+        Some(StepKind::Secant | StepKind::InverseQuadratic)
+    )));
+    assert!(result
+        .trace
+        .iter()
+        .any(|step| step.step_kind == Some(StepKind::Bisection)));
+    assert_brackets_are_certificates(&result, 1.0);
+}
+
+#[test]
+fn safeguarded_solver_accepts_an_endpoint_root() {
+    let result = safeguarded("flat", 0.0, 1.0, Options::default());
+    assert_eq!(result.status, Status::Converged);
+    assert_eq!(result.root, Some(0.0));
+    assert_eq!(result.iterations, 0);
+    assert_eq!(result.function_evaluations, 2);
+}
+
+#[test]
+fn safeguarded_solver_rejects_a_non_sign_changing_bracket() {
+    let result = safeguarded("repeated", 0.0, 2.0, Options::default());
+    assert_eq!(result.status, Status::InvalidBracket);
 }
