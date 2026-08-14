@@ -49,7 +49,9 @@ finite-precision platforms, or production solver libraries.
   assumptions.
 
 The v0.2 protocol was published at commit `e4c6f222c22f163b909503d05ead800394757f26`
-before the new implementation and result run.
+before the new implementation and result run. Its dated amendment transparently records why
+cross-platform transcendental results are compared within a `16 × ε`-scaled allowance rather than
+claimed to be byte-identical.
 
 ## Reproduce
 

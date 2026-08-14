@@ -20,6 +20,11 @@ and had non-increasing width within the prespecified floating-point comparison a
 skewed case visibly exercised both interpolation and bisection, as frozen in advance. Counts apply
 only to these deterministic examples; they do not establish a general efficiency ranking.
 
+The first Ubuntu CI run differed from the macOS-generated v0.2 JSON only in a last-bit cosine
+residual. A dated post-result protocol amendment therefore withdraws cross-platform byte identity:
+CI requires exact structure and decisions while permitting floating-point leaves to differ by at
+most `16 × ε × (1 + scale)`. This platform boundary does not change any frozen outcome.
+
 ## v0.1 foundation
 
 ## Question

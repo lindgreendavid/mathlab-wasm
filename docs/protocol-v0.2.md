@@ -94,5 +94,23 @@ multiple-root, complex-valued, or noisy functions beyond the explicitly rejected
 
 ## Amendments
 
-None at freeze. Any amendment must be appended with date, reason, whether implementation or results
-were already known, and its effect on confirmatory status.
+### 2026-08-14 — cross-platform transcendental serialization
+
+**Timing:** added after implementation and after the macOS result was known, when the first Ubuntu
+CI run compared the generated report with the committed file.
+
+**Reason:** the Ubuntu and macOS system math libraries returned a last-bit difference for a cosine
+residual. All statuses, reference-root decisions, bracket checks, step kinds, counts, and frozen
+tolerance decisions agreed, but the complete JSON files differed at the exact decimal encoding of
+that floating-point value. IEEE-754 binary64 does not require different elementary-function library
+implementations to return bit-identical transcendental results.
+
+**Change:** byte-for-byte regeneration remains required on the producing platform and remains the
+gate for the unchanged v0.1 report. Cross-platform v0.2 CI now requires identical JSON structure,
+keys, strings, booleans, integer counts, and list lengths; floating-point leaves must agree within
+`16 × ε × (1 + max(|expected|, |observed|))`. The semantic acceptance checks are still recomputed
+independently and must all pass.
+
+**Effect on confirmatory status:** the five qualitative hypotheses and prespecified numerical
+tolerances remain confirmatory. Cross-platform byte identity is withdrawn as an unsupported
+technical claim and is not counted as a confirmed outcome.

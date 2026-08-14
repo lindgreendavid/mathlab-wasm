@@ -16,3 +16,6 @@ Rust/WebAssembly laboratory.
 All five v0.2 expectations pass. The result is a bounded deterministic verification of established
 behavior, not a representative performance benchmark or a claim of equivalence with Netlib, SciPy,
 or another production solver.
+
+The release audit also records a last-bit macOS/Ubuntu difference in one cosine residual and the
+resulting post-result amendment to the cross-platform reproducibility gate.
