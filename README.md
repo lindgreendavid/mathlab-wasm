@@ -17,6 +17,14 @@ v0.2 studies remain reproducible. This is an educational verification of establi
 numerical-analysis behavior, not novel mathematics, a rigorous root enclosure, or a general solver
 ranking.
 
+## What this contributes
+
+This project contributes one executable teaching and verification surface spanning solver behavior,
+bracket-preserving safeguards, and residual-versus-forward-error diagnostics. Its seventeen frozen
+cases make assumptions, failure states, conditioning, and machine-readable traces inspectable under
+one binary64 implementation. It does **not** propose a new root finder, establish a universal solver
+ranking, or provide a rigorous enclosure or production-library equivalence result.
+
 ## Fixed question
 
 > Across a prespecified one-dimensional benchmark suite, which convergence guarantees and failure
