@@ -1,0 +1,387 @@
+{
+  "schema_version": "1.0.0",
+  "product_version": "0.2.0",
+  "protocol": "docs/protocol-v0.2.md",
+  "protocol_commit": "e4c6f222c22f163b909503d05ead800394757f26",
+  "arithmetic": "IEEE-754 binary64 via Rust f64",
+  "x_tolerance": 1e-10,
+  "f_tolerance": 1e-10,
+  "max_iterations": 80,
+  "interpretation": "Selected deterministic demonstrations; not a representative solver benchmark or universal ranking.",
+  "all_expectations_met": true,
+  "scenarios": [
+    {
+      "id": "cubic-safeguarded",
+      "expectation": "converged",
+      "reference_root": 1.5213797068045676,
+      "checks": {
+        "status_matches": true,
+        "reference_error_below_1e_9": true,
+        "brackets_contain_reference": true,
+        "bracket_width_non_increasing": true,
+        "interpolation_observed": null,
+        "bisection_observed": null,
+        "endpoint_contract_met": null
+      },
+      "passed": true,
+      "result": {
+        "method": "safeguarded",
+        "function_id": "cubic",
+        "status": "converged",
+        "root": 1.5213797068045676,
+        "residual": 0.0,
+        "iterations": 7,
+        "function_evaluations": 9,
+        "trace": [
+          {
+            "iteration": 1,
+            "x": 1.3333333333333333,
+            "fx": -0.962962962962963,
+            "step_size": 0.33333333333333326,
+            "bracket_width": 0.6666666666666667,
+            "bracket_left": 1.3333333333333333,
+            "bracket_right": 2.0,
+            "step_kind": "secant"
+          },
+          {
+            "iteration": 2,
+            "x": 1.582800284292822,
+            "fx": 0.3825207959383192,
+            "step_size": 0.24946695095948868,
+            "bracket_width": 0.24946695095948868,
+            "bracket_left": 1.3333333333333333,
+            "bracket_right": 1.582800284292822,
+            "step_kind": "inverse-quadratic"
+          },
+          {
+            "iteration": 3,
+            "x": 1.5118768740249386,
+            "fx": -0.05607152838841101,
+            "step_size": 0.07092341026788329,
+            "bracket_width": 0.07092341026788329,
+            "bracket_left": 1.5118768740249386,
+            "bracket_right": 1.582800284292822,
+            "step_kind": "secant"
+          },
+          {
+            "iteration": 4,
+            "x": 1.520944027715654,
+            "fx": -0.0025887181528310155,
+            "step_size": 0.009067153690715424,
+            "bracket_width": 0.06185625657716787,
+            "bracket_left": 1.520944027715654,
+            "bracket_right": 1.582800284292822,
+            "step_kind": "secant"
+          },
+          {
+            "iteration": 5,
+            "x": 1.5213799532716044,
+            "fx": 1.464948249374487e-6,
+            "step_size": 0.0004359255559502895,
+            "bracket_width": 0.0004359255559502895,
+            "bracket_left": 1.520944027715654,
+            "bracket_right": 1.5213799532716044,
+            "step_kind": "inverse-quadratic"
+          },
+          {
+            "iteration": 6,
+            "x": 1.5213797067220922,
+            "fx": -4.90215645854164e-10,
+            "step_size": 2.465495121395378e-7,
+            "bracket_width": 2.465495121395378e-7,
+            "bracket_left": 1.5213797067220922,
+            "bracket_right": 1.5213799532716044,
+            "step_kind": "secant"
+          },
+          {
+            "iteration": 7,
+            "x": 1.5213797068045676,
+            "fx": 0.0,
+            "step_size": 8.247535987493393e-11,
+            "bracket_width": 8.247535987493393e-11,
+            "bracket_left": 1.5213797067220922,
+            "bracket_right": 1.5213797068045676,
+            "step_kind": "secant"
+          }
+        ],
+        "message": "The residual met the frozen tolerance while the bracket was preserved."
+      }
+    },
+    {
+      "id": "cosine-safeguarded",
+      "expectation": "converged",
+      "reference_root": 0.7390851332151607,
+      "checks": {
+        "status_matches": true,
+        "reference_error_below_1e_9": true,
+        "brackets_contain_reference": true,
+        "bracket_width_non_increasing": true,
+        "interpolation_observed": null,
+        "bisection_observed": null,
+        "endpoint_contract_met": null
+      },
+      "passed": true,
+      "result": {
+        "method": "safeguarded",
+        "function_id": "cosine",
+        "status": "converged",
+        "root": 0.7390851332151559,
+        "residual": 7.882583474838611e-15,
+        "iterations": 5,
+        "function_evaluations": 7,
+        "trace": [
+          {
+            "iteration": 1,
+            "x": 0.6850733573260451,
+            "fx": 0.08929927648185998,
+            "step_size": 0.31492664267395487,
+            "bracket_width": 0.31492664267395487,
+            "bracket_left": 0.6850733573260451,
+            "bracket_right": 1.0,
+            "step_kind": "secant"
+          },
+          {
+            "iteration": 2,
+            "x": 0.736298997613654,
+            "fx": 0.004660039038142605,
+            "step_size": 0.0512256402876089,
+            "bracket_width": 0.263701002386346,
+            "bracket_left": 0.736298997613654,
+            "bracket_right": 1.0,
+            "step_kind": "secant"
+          },
+          {
+            "iteration": 3,
+            "x": 0.7390910582853698,
+            "fx": -9.916281749067224e-6,
+            "step_size": 0.002792060671715779,
+            "bracket_width": 0.002792060671715779,
+            "bracket_left": 0.736298997613654,
+            "bracket_right": 0.7390910582853698,
+            "step_kind": "inverse-quadratic"
+          },
+          {
+            "iteration": 4,
+            "x": 0.7390851295647751,
+            "fx": 6.109329153680676e-9,
+            "step_size": 5.928720594683412e-6,
+            "bracket_width": 5.928720594683412e-6,
+            "bracket_left": 0.7390851295647751,
+            "bracket_right": 0.7390910582853698,
+            "step_kind": "secant"
+          },
+          {
+            "iteration": 5,
+            "x": 0.7390851332151559,
+            "fx": 7.882583474838611e-15,
+            "step_size": 3.650380775432893e-9,
+            "bracket_width": 5.925070213907979e-6,
+            "bracket_left": 0.7390851332151559,
+            "bracket_right": 0.7390910582853698,
+            "step_kind": "secant"
+          }
+        ],
+        "message": "The residual met the frozen tolerance while the bracket was preserved."
+      }
+    },
+    {
+      "id": "skewed-safeguarded",
+      "expectation": "converged-with-interpolation-and-bisection",
+      "reference_root": 1.0,
+      "checks": {
+        "status_matches": true,
+        "reference_error_below_1e_9": true,
+        "brackets_contain_reference": true,
+        "bracket_width_non_increasing": true,
+        "interpolation_observed": true,
+        "bisection_observed": true,
+        "endpoint_contract_met": null
+      },
+      "passed": true,
+      "result": {
+        "method": "safeguarded",
+        "function_id": "skewed",
+        "status": "converged",
+        "root": 1.0,
+        "residual": 0.0,
+        "iterations": 11,
+        "function_evaluations": 13,
+        "trace": [
+          {
+            "iteration": 1,
+            "x": 0.001953125,
+            "fx": -1.0,
+            "step_size": 0.001953125,
+            "bracket_width": 1.998046875,
+            "bracket_left": 0.001953125,
+            "bracket_right": 2.0,
+            "step_kind": "secant"
+          },
+          {
+            "iteration": 2,
+            "x": 0.0039043426513671875,
+            "fx": -1.0,
+            "step_size": 0.0019512176513671875,
+            "bracket_width": 1.9960956573486328,
+            "bracket_left": 0.0039043426513671875,
+            "bracket_right": 2.0,
+            "step_kind": "secant"
+          },
+          {
+            "iteration": 3,
+            "x": 1.0019521713256836,
+            "fx": 0.019694102854385998,
+            "step_size": 0.9980478286743164,
+            "bracket_width": 0.9980478286743164,
+            "bracket_left": 0.0039043426513671875,
+            "bracket_right": 1.0019521713256836,
+            "step_kind": "bisection"
+          },
+          {
+            "iteration": 4,
+            "x": 0.9826761388994026,
+            "fx": -0.16033875708833933,
+            "step_size": 0.019276032426280953,
+            "bracket_width": 0.019276032426280953,
+            "bracket_left": 0.9826761388994026,
+            "bracket_right": 1.0019521713256836,
+            "step_kind": "secant"
+          },
+          {
+            "iteration": 5,
+            "x": 0.9998435331284765,
+            "fx": -0.0015635674900968954,
+            "step_size": 0.00210863819720708,
+            "bracket_width": 0.00210863819720708,
+            "bracket_left": 0.9998435331284765,
+            "bracket_right": 1.0019521713256836,
+            "step_kind": "secant"
+          },
+          {
+            "iteration": 6,
+            "x": 1.0008978522270802,
+            "fx": 0.009014885500597147,
+            "step_size": 0.001054319098603651,
+            "bracket_width": 0.001054319098603651,
+            "bracket_left": 0.9998435331284765,
+            "bracket_right": 1.0008978522270802,
+            "step_kind": "bisection"
+          },
+          {
+            "iteration": 7,
+            "x": 1.0003706926777785,
+            "fx": 0.0037131164820745077,
+            "step_size": 0.0005271595493019365,
+            "bracket_width": 0.0005271595493019365,
+            "bracket_left": 0.9998435331284765,
+            "bracket_right": 1.0003706926777785,
+            "step_kind": "bisection"
+          },
+          {
+            "iteration": 8,
+            "x": 1.0001071129031276,
+            "fx": 0.0010716454716050983,
+            "step_size": 0.0002635797746510793,
+            "bracket_width": 0.0002635797746510793,
+            "bracket_left": 0.9998435331284765,
+            "bracket_right": 1.0001071129031276,
+            "step_kind": "bisection"
+          },
+          {
+            "iteration": 9,
+            "x": 0.9999999245748913,
+            "fx": -7.542508312363694e-7,
+            "step_size": 0.0001071883282363073,
+            "bracket_width": 0.0001071883282363073,
+            "bracket_left": 0.9999999245748913,
+            "bracket_right": 1.0001071129031276,
+            "step_kind": "secant"
+          },
+          {
+            "iteration": 10,
+            "x": 0.9999999999636516,
+            "fx": -3.634836875932024e-10,
+            "step_size": 7.538876034551834e-8,
+            "bracket_width": 0.00010711293947596179,
+            "bracket_left": 0.9999999999636516,
+            "bracket_right": 1.0001071129031276,
+            "step_kind": "secant"
+          },
+          {
+            "iteration": 11,
+            "x": 1.0,
+            "fx": 0.0,
+            "step_size": 3.634836875932024e-11,
+            "bracket_width": 3.634836875932024e-11,
+            "bracket_left": 0.9999999999636516,
+            "bracket_right": 1.0,
+            "step_kind": "inverse-quadratic"
+          }
+        ],
+        "message": "The residual met the frozen tolerance while the bracket was preserved."
+      }
+    },
+    {
+      "id": "endpoint-safeguarded",
+      "expectation": "exact-endpoint-root",
+      "reference_root": 0.0,
+      "checks": {
+        "status_matches": true,
+        "reference_error_below_1e_9": true,
+        "brackets_contain_reference": true,
+        "bracket_width_non_increasing": true,
+        "interpolation_observed": null,
+        "bisection_observed": null,
+        "endpoint_contract_met": true
+      },
+      "passed": true,
+      "result": {
+        "method": "safeguarded",
+        "function_id": "flat",
+        "status": "converged",
+        "root": 0.0,
+        "residual": 0.0,
+        "iterations": 0,
+        "function_evaluations": 2,
+        "trace": [
+          {
+            "iteration": 0,
+            "x": 0.0,
+            "fx": 0.0,
+            "step_size": null,
+            "bracket_width": 1.0,
+            "bracket_left": 0.0,
+            "bracket_right": 1.0
+          }
+        ],
+        "message": "An endpoint is an exact root in binary64 arithmetic."
+      }
+    },
+    {
+      "id": "repeated-safeguarded",
+      "expectation": "invalid-bracket",
+      "reference_root": null,
+      "checks": {
+        "status_matches": true,
+        "reference_error_below_1e_9": null,
+        "brackets_contain_reference": null,
+        "bracket_width_non_increasing": null,
+        "interpolation_observed": null,
+        "bisection_observed": null,
+        "endpoint_contract_met": null
+      },
+      "passed": true,
+      "result": {
+        "method": "safeguarded",
+        "function_id": "repeated",
+        "status": "invalid-bracket",
+        "root": null,
+        "residual": null,
+        "iterations": 0,
+        "function_evaluations": 2,
+        "trace": [],
+        "message": "The endpoint function values must have opposite signs."
+      }
+    }
+  ]
+}

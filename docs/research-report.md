@@ -1,4 +1,31 @@
-# Root-Finding Under the Microscope — v0.1 report
+# Root-Finding Under the Microscope — versioned reports
+
+## v0.2 safeguarded-method extension
+
+The v0.2 protocol was committed as `e4c6f222c22f163b909503d05ead800394757f26` before the new
+solver was implemented or its benchmark was executed. All five prespecified qualitative outcomes
+passed. Exact traces and acceptance checks are recorded in
+[`reports/v0.2-safeguarded-root-finding.json`](../reports/v0.2-safeguarded-root-finding.json).
+
+| Frozen run | Status | Estimate | Iterations | Function evaluations | Accepted step kinds |
+| --- | --- | ---: | ---: | ---: | --- |
+| Cubic / safeguarded | converged | 1.5213797068045676 | 7 | 9 | secant, inverse quadratic |
+| Cosine / safeguarded | converged | 0.7390851332151559 | 5 | 7 | secant, inverse quadratic |
+| Skewed `x¹⁰−1` / safeguarded | converged | 1 | 11 | 13 | secant, inverse quadratic, bisection |
+| Endpoint `x³` / safeguarded | converged | 0 | 0 | 2 | none required |
+| Repeated root / safeguarded | invalid bracket | — | 0 | 2 | none |
+
+Every recorded nonterminal bracket in the three iterative cases contained the fixed reference root
+and had non-increasing width within the prespecified floating-point comparison allowance. The
+skewed case visibly exercised both interpolation and bisection, as frozen in advance. Counts apply
+only to these deterministic examples; they do not establish a general efficiency ranking.
+
+The first Ubuntu CI run differed from the macOS-generated v0.2 JSON only in a last-bit cosine
+residual. A dated post-result protocol amendment therefore withdraws cross-platform byte identity:
+CI requires exact structure and decisions while permitting floating-point leaves to differ by at
+most `16 × ε × (1 + scale)`. This platform boundary does not change any frozen outcome.
+
+## v0.1 foundation
 
 ## Question
 
@@ -41,8 +68,8 @@ values. These are established properties made inspectable, not novel discoveries
 
 ## Limits
 
-The suite is intentionally small and adversarial, uses analytic functions and derivatives, and does
+The suites are intentionally small and adversarial, use analytic functions and derivatives, and do
 not sample real scientific workloads. Timing is excluded because browser and hardware effects would
-confound a seven-case educational suite. Brent's safeguarded method, multiple roots beyond one
-example, noisy evaluations, automatic differentiation, arbitrary expressions, and interval
-arithmetic remain outside v0.1.
+confound these educational cases. Production-library equivalence, multiple roots beyond the
+explicit rejected-bracket example, noisy evaluations, automatic differentiation, arbitrary
+expressions, and interval arithmetic remain outside the evidence.

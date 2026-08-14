@@ -32,6 +32,8 @@ jobs:
       - run: cargo test --locked
       - run: cargo run --locked --example generate_report -- /tmp/v0.1-root-finding.json
       - run: cmp reports/v0.1-root-finding.json /tmp/v0.1-root-finding.json
+      - run: cargo run --locked --example generate_v0_2_report -- /tmp/v0.2-safeguarded-root-finding.json
+      - run: python3 scripts/compare_v0_2_report.py reports/v0.2-safeguarded-root-finding.json /tmp/v0.2-safeguarded-root-finding.json
       - run: wasm-pack build --release --target web --out-dir web/pkg
       - run: python3 scripts/verify_report.py
       - run: python3 scripts/verify_web.py

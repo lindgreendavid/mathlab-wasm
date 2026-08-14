@@ -128,7 +128,7 @@ fn main() {
     let all_expectations_met = scenarios.iter().all(|case| case.passed);
     let report = Report {
         schema_version: "1.0.0",
-        product_version: env!("CARGO_PKG_VERSION"),
+        product_version: "0.1.0",
         protocol: "docs/protocol.md",
         arithmetic: "IEEE-754 binary64 via Rust f64",
         x_tolerance: options.x_tolerance,

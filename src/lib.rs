@@ -5,12 +5,17 @@ use wasm_bindgen::prelude::*;
 
 const DENOMINATOR_FLOOR: f64 = 64.0 * f64::EPSILON;
 
+fn safe_midpoint(left: f64, right: f64) -> f64 {
+    left / 2.0 + right / 2.0
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]
 pub enum Method {
     Bisection,
     Newton,
     Secant,
+    Safeguarded,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -25,6 +30,14 @@ pub enum Status {
     MaxIterations,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "kebab-case")]
+pub enum StepKind {
+    Bisection,
+    Secant,
+    InverseQuadratic,
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Step {
     pub iteration: usize,
@@ -32,6 +45,12 @@ pub struct Step {
     pub fx: f64,
     pub step_size: Option<f64>,
     pub bracket_width: Option<f64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bracket_left: Option<f64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bracket_right: Option<f64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub step_kind: Option<StepKind>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -71,6 +90,7 @@ fn function(function_id: &str, x: f64) -> Option<(f64, f64)> {
         "repeated" => Some(((x - 1.0).powi(2), 2.0 * (x - 1.0))),
         "newton-cycle" => Some((x * x * x - 2.0 * x + 2.0, 3.0 * x * x - 2.0)),
         "flat" => Some((x.powi(3), 3.0 * x * x)),
+        "skewed" => Some((x.powi(10) - 1.0, 10.0 * x.powi(9))),
         _ => None,
     }
 }
@@ -169,6 +189,9 @@ pub fn bisection(
             fx: f_midpoint,
             step_size: Some(width / 2.0),
             bracket_width: Some(width),
+            bracket_left: None,
+            bracket_right: None,
+            step_kind: None,
         });
         if !f_midpoint.is_finite() {
             return finish(
@@ -233,6 +256,9 @@ pub fn newton(function_id: &str, mut x: f64, options: Options) -> SolveResult {
             fx,
             step_size,
             bracket_width: None,
+            bracket_left: None,
+            bracket_right: None,
+            step_kind: None,
         });
         if !x.is_finite() || !fx.is_finite() || !derivative.is_finite() {
             return finish(
@@ -282,6 +308,9 @@ pub fn newton(function_id: &str, mut x: f64, options: Options) -> SolveResult {
                 fx: function(function_id, next).map_or(f64::NAN, |pair| pair.0),
                 step_size: Some((next - x).abs()),
                 bracket_width: None,
+                bracket_left: None,
+                bracket_right: None,
+                step_kind: None,
             });
             evaluations += 1;
             return finish(
@@ -342,6 +371,9 @@ pub fn secant(
             fx: f_previous,
             step_size: None,
             bracket_width: None,
+            bracket_left: None,
+            bracket_right: None,
+            step_kind: None,
         },
         Step {
             iteration: 1,
@@ -349,6 +381,9 @@ pub fn secant(
             fx: f_current,
             step_size: Some((current - previous).abs()),
             bracket_width: None,
+            bracket_left: None,
+            bracket_right: None,
+            step_kind: None,
         },
     ];
     if [previous, current, f_previous, f_current]
@@ -400,6 +435,9 @@ pub fn secant(
             fx: f_next,
             step_size: Some((next - current).abs()),
             bracket_width: None,
+            bracket_left: None,
+            bracket_right: None,
+            step_kind: None,
         });
         if !next.is_finite() || !f_next.is_finite() {
             return finish(
@@ -426,6 +464,241 @@ pub fn secant(
     )
 }
 
+pub fn safeguarded(function_id: &str, mut a: f64, mut b: f64, options: Options) -> SolveResult {
+    let method = Method::Safeguarded;
+    let options = valid_options(options);
+    let Some((mut fa, _)) = function(function_id, a) else {
+        return finish(
+            method,
+            function_id,
+            Status::NonFinite,
+            vec![],
+            0,
+            "Unknown function.",
+        );
+    };
+    let Some((mut fb, _)) = function(function_id, b) else {
+        return finish(
+            method,
+            function_id,
+            Status::NonFinite,
+            vec![],
+            0,
+            "Unknown function.",
+        );
+    };
+    let mut evaluations = 2;
+    if [a, b, fa, fb].iter().any(|value| !value.is_finite()) {
+        return finish(
+            method,
+            function_id,
+            Status::NonFinite,
+            vec![],
+            evaluations,
+            "Inputs must be finite.",
+        );
+    }
+    if a >= b {
+        return finish(
+            method,
+            function_id,
+            Status::InvalidBracket,
+            vec![],
+            evaluations,
+            "The endpoints must be ordered.",
+        );
+    }
+    if !(b - a).is_finite() {
+        return finish(
+            method,
+            function_id,
+            Status::NonFinite,
+            vec![],
+            evaluations,
+            "The bracket width must be finite.",
+        );
+    }
+    if fa == 0.0 || fb == 0.0 {
+        let (root, f_root) = if fa == 0.0 { (a, fa) } else { (b, fb) };
+        let trace = vec![Step {
+            iteration: 0,
+            x: root,
+            fx: f_root,
+            step_size: None,
+            bracket_width: Some((b - a).abs()),
+            bracket_left: Some(a),
+            bracket_right: Some(b),
+            step_kind: None,
+        }];
+        return finish(
+            method,
+            function_id,
+            Status::Converged,
+            trace,
+            evaluations,
+            "An endpoint is an exact root in binary64 arithmetic.",
+        );
+    }
+    if fa.signum() == fb.signum() {
+        return finish(
+            method,
+            function_id,
+            Status::InvalidBracket,
+            vec![],
+            evaluations,
+            "The endpoint function values must have opposite signs.",
+        );
+    }
+
+    if fa.abs() < fb.abs() {
+        std::mem::swap(&mut a, &mut b);
+        std::mem::swap(&mut fa, &mut fb);
+    }
+    let mut c = a;
+    let mut fc = fa;
+    let mut d = c;
+    let mut used_bisection = true;
+    let mut trace = Vec::new();
+
+    for iteration in 1..=options.max_iterations {
+        let bracket_left = a.min(b);
+        let bracket_right = a.max(b);
+        let bracket_width = bracket_right - bracket_left;
+        if bracket_width / 2.0 <= options.x_tolerance {
+            let midpoint = safe_midpoint(bracket_left, bracket_right);
+            let (f_midpoint, _) = function(function_id, midpoint).expect("validated function id");
+            evaluations += 1;
+            trace.push(Step {
+                iteration,
+                x: midpoint,
+                fx: f_midpoint,
+                step_size: Some((midpoint - b).abs()),
+                bracket_width: Some(bracket_width),
+                bracket_left: Some(bracket_left),
+                bracket_right: Some(bracket_right),
+                step_kind: Some(StepKind::Bisection),
+            });
+            let (status, message) = if f_midpoint.is_finite() {
+                (
+                    Status::Converged,
+                    "The certified bracket half-width met the frozen tolerance.",
+                )
+            } else {
+                (
+                    Status::NonFinite,
+                    "A non-finite midpoint stopped the method.",
+                )
+            };
+            return finish(method, function_id, status, trace, evaluations, message);
+        }
+
+        let local_scale = fa.abs().max(fb.abs()).max(fc.abs());
+        let denominator_floor = DENOMINATOR_FLOOR * (1.0 + local_scale);
+        let can_use_iqi = (fa - fb).abs() > denominator_floor
+            && (fa - fc).abs() > denominator_floor
+            && (fb - fc).abs() > denominator_floor;
+        let (mut candidate, mut step_kind) = if can_use_iqi {
+            let first = a * fb * fc / ((fa - fb) * (fa - fc));
+            let second = b * fa * fc / ((fb - fa) * (fb - fc));
+            let third = c * fa * fb / ((fc - fa) * (fc - fb));
+            (first + second + third, StepKind::InverseQuadratic)
+        } else if (fb - fa).abs() > denominator_floor {
+            (b - fb * (b - a) / (fb - fa), StepKind::Secant)
+        } else {
+            (safe_midpoint(a, b), StepKind::Bisection)
+        };
+
+        let interpolation_bound = (3.0 * a + b) / 4.0;
+        let lower_bound = interpolation_bound.min(b);
+        let upper_bound = interpolation_bound.max(b);
+        let outside_safe_region =
+            !candidate.is_finite() || candidate <= lower_bound || candidate >= upper_bound;
+        let insufficient_progress = if used_bisection {
+            (candidate - b).abs() >= (b - c).abs() / 2.0 || (b - c).abs() < options.x_tolerance
+        } else {
+            (candidate - b).abs() >= (c - d).abs() / 2.0 || (c - d).abs() < options.x_tolerance
+        };
+        if step_kind == StepKind::Bisection || outside_safe_region || insufficient_progress {
+            candidate = safe_midpoint(a, b);
+            step_kind = StepKind::Bisection;
+            used_bisection = true;
+        } else {
+            used_bisection = false;
+        }
+
+        let previous_best = b;
+        let (f_candidate, _) = function(function_id, candidate).expect("validated function id");
+        evaluations += 1;
+        if !candidate.is_finite() || !f_candidate.is_finite() {
+            trace.push(Step {
+                iteration,
+                x: candidate,
+                fx: f_candidate,
+                step_size: Some((candidate - previous_best).abs()),
+                bracket_width: Some(bracket_width),
+                bracket_left: Some(bracket_left),
+                bracket_right: Some(bracket_right),
+                step_kind: Some(step_kind),
+            });
+            return finish(
+                method,
+                function_id,
+                Status::NonFinite,
+                trace,
+                evaluations,
+                "A non-finite interpolation result stopped the method.",
+            );
+        }
+
+        d = c;
+        c = b;
+        fc = fb;
+        if fa.signum() != f_candidate.signum() {
+            b = candidate;
+            fb = f_candidate;
+        } else {
+            a = candidate;
+            fa = f_candidate;
+        }
+        if fa.abs() < fb.abs() {
+            std::mem::swap(&mut a, &mut b);
+            std::mem::swap(&mut fa, &mut fb);
+        }
+
+        let next_left = a.min(b);
+        let next_right = a.max(b);
+        trace.push(Step {
+            iteration,
+            x: candidate,
+            fx: f_candidate,
+            step_size: Some((candidate - previous_best).abs()),
+            bracket_width: Some(next_right - next_left),
+            bracket_left: Some(next_left),
+            bracket_right: Some(next_right),
+            step_kind: Some(step_kind),
+        });
+        if f_candidate.abs() <= options.f_tolerance {
+            return finish(
+                method,
+                function_id,
+                Status::Converged,
+                trace,
+                evaluations,
+                "The residual met the frozen tolerance while the bracket was preserved.",
+            );
+        }
+    }
+
+    finish(
+        method,
+        function_id,
+        Status::MaxIterations,
+        trace,
+        evaluations,
+        "The iteration budget was exhausted.",
+    )
+}
+
 pub fn solve(
     method: Method,
     function_id: &str,
@@ -437,6 +710,7 @@ pub fn solve(
         Method::Bisection => bisection(function_id, first, second, options),
         Method::Newton => newton(function_id, first, options),
         Method::Secant => secant(function_id, first, second, options),
+        Method::Safeguarded => safeguarded(function_id, first, second, options),
     }
 }
 
@@ -453,6 +727,7 @@ pub fn solve_json(
         "bisection" => Method::Bisection,
         "newton" => Method::Newton,
         "secant" => Method::Secant,
+        "safeguarded" => Method::Safeguarded,
         _ => return Err(JsValue::from_str("Unknown method.")),
     };
     let options = Options {
