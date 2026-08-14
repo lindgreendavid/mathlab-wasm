@@ -29,6 +29,20 @@ root. Newton and secant therefore require both residual and step tolerances. Bis
 stop on its certified half-width. The lab presents both residual and geometric progress so users can
 see that they answer different questions.
 
+## Residual and conditioning diagnostic
+
+For a simple reference root `r`, a first-order expansion gives
+`f(x̂) ≈ f′(r)(x̂-r)`. Under the frozen additive function-value perturbation model, the local
+absolute root condition number is `1/|f′(r)|`, and the associated first-order error estimate is
+`|f(x̂)|/|f′(r)|`. This is a local approximation, not a rigorous interval bound.
+
+Multiplying an equation by a nonzero constant leaves its roots and a fixed candidate's forward
+error unchanged, but it rescales the raw residual. The condition number above changes inversely,
+so the product of residual and condition remains aligned for the frozen linear cases. At a multiple
+root, `f′(r)=0`; the simple-root linearization is singular and the diagnostic is reported as
+unavailable. These definitions and their perturbation model follow the interpretation fixed in the
+v1.0 protocol and the cited numerical-analysis sources.
+
 ## Floating-point boundary
 
 All calculations use Rust `f64`. IEEE 754 standardizes binary floating-point formats and operations,

@@ -23,6 +23,17 @@ const elements = {
   chartDescription: document.querySelector("#trace-desc"),
   chartNote: document.querySelector("#chart-note"),
   traceBody: document.querySelector("#trace-body"),
+  conditioningEquation: document.querySelector("#conditioning-equation"),
+  conditioningClassification: document.querySelector("#conditioning-classification"),
+  conditioningResidual: document.querySelector("#conditioning-residual"),
+  conditioningForward: document.querySelector("#conditioning-forward"),
+  conditioningCandidate: document.querySelector("#conditioning-candidate"),
+  conditioningDerivative: document.querySelector("#conditioning-derivative"),
+  conditioningCondition: document.querySelector("#conditioning-condition"),
+  conditioningEstimate: document.querySelector("#conditioning-estimate"),
+  conditioningInterpretation: document.querySelector("#conditioning-interpretation"),
+  residualBar: document.querySelector("#residual-bar"),
+  forwardBar: document.querySelector("#forward-bar"),
 };
 
 const presets = {
@@ -58,6 +69,47 @@ function formatNumber(value) {
   const magnitude = Math.abs(value);
   if (magnitude >= 10000 || magnitude < 0.0001) return value.toExponential(5);
   return value.toPrecision(8).replace(/\.?0+$/, "");
+}
+
+function diagnosticBarWidth(value) {
+  if (!Number.isFinite(value) || value <= 0) return 0;
+  return Math.max(3, Math.min(100, (Math.log10(value) + 15) / 17 * 100));
+}
+
+function renderConditioningCase(caseData) {
+  elements.conditioningEquation.textContent = caseData.equation;
+  elements.conditioningClassification.textContent = caseData.classification.replaceAll("-", " ");
+  elements.conditioningResidual.textContent = formatNumber(caseData.residual);
+  elements.conditioningForward.textContent = formatNumber(caseData.forward_error);
+  elements.conditioningCandidate.textContent = formatNumber(caseData.candidate);
+  elements.conditioningDerivative.textContent = formatNumber(caseData.derivative_magnitude_at_root);
+  elements.conditioningCondition.textContent = caseData.absolute_condition_number === null ? "Unavailable" : formatNumber(caseData.absolute_condition_number);
+  elements.conditioningEstimate.textContent = caseData.first_order_error_estimate === null ? "Unavailable" : formatNumber(caseData.first_order_error_estimate);
+  elements.conditioningInterpretation.textContent = caseData.interpretation;
+  elements.residualBar.style.width = `${diagnosticBarWidth(caseData.residual)}%`;
+  elements.forwardBar.style.width = `${diagnosticBarWidth(caseData.forward_error)}%`;
+}
+
+async function loadConditioningReport() {
+  try {
+    const response = await fetch("data/v1.0-conditioning.json");
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const report = await response.json();
+    if (!report.all_expectations_met) throw new Error("the frozen report did not pass");
+    const cases = new Map(report.cases.map((caseData) => [caseData.id, caseData]));
+    document.querySelectorAll("[data-conditioning-case]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const selected = cases.get(button.dataset.conditioningCase);
+        if (!selected) return;
+        document.querySelectorAll("[data-conditioning-case]").forEach((candidate) => candidate.setAttribute("aria-pressed", String(candidate === button)));
+        renderConditioningCase(selected);
+      });
+    });
+    renderConditioningCase(cases.get("flat-scaled-linear"));
+  } catch (error) {
+    elements.conditioningEquation.textContent = "Report unavailable";
+    elements.conditioningInterpretation.textContent = `The committed v1.0 report could not be loaded: ${error instanceof Error ? error.message : String(error)}`;
+  }
 }
 
 function updateInputMeaning(applyPreset = true) {
@@ -225,6 +277,7 @@ document.querySelectorAll("[data-case]").forEach((button) => {
 
 updateInputMeaning(true);
 elements.run.disabled = true;
+await loadConditioningReport();
 
 try {
   await init();

@@ -9,6 +9,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 REPORT = ROOT / "reports" / "v0.1-root-finding.json"
 REPORT_V0_2 = ROOT / "reports" / "v0.2-safeguarded-root-finding.json"
+REPORT_V1 = ROOT / "reports" / "v1.0-conditioning.json"
 
 
 def main() -> None:
@@ -53,7 +54,27 @@ def main() -> None:
     kinds = {step.get("step_kind") for step in skewed["result"]["trace"]}
     assert "bisection" in kinds
     assert kinds & {"secant", "inverse-quadratic"}
-    print("v0.1 and v0.2 reports are structurally valid; all frozen expectations pass")
+    conditioning = json.loads(REPORT_V1.read_text(encoding="utf-8"))
+    assert conditioning["schema_version"] == "1.0.0"
+    assert conditioning["product_version"] == "1.0.0"
+    assert conditioning["protocol"] == "docs/protocol-v1.0.md"
+    assert conditioning["protocol_commit"] == "97b21a2"
+    assert conditioning["all_expectations_met"] is True
+    assert len(conditioning["cases"]) == 5
+    assert {case["id"] for case in conditioning["cases"]} == {
+        "flat-scaled-linear",
+        "unit-linear",
+        "steep-scaled-linear",
+        "simple-cubic-local",
+        "repeated-root",
+    }
+    assert all(case["passed"] for case in conditioning["cases"])
+    assert all(conditioning["global_checks"].values())
+    repeated = next(case for case in conditioning["cases"] if case["id"] == "repeated-root")
+    assert repeated["absolute_condition_number"] is None
+    assert repeated["first_order_error_estimate"] is None
+    assert (ROOT / "web" / "data" / "v1.0-conditioning.json").read_bytes() == REPORT_V1.read_bytes()
+    print("v0.1, v0.2, and v1.0 reports are structurally valid; all frozen expectations pass")
 
 
 if __name__ == "__main__":

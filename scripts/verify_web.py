@@ -22,6 +22,10 @@ REQUIRED_HTML = (
     'id="trace-chart"',
     '<option value="safeguarded">',
     'data-case="safeguarded-skewed"',
+    'id="microscope"',
+    'data-conditioning-case="flat-scaled-linear"',
+    'id="conditioning-residual"',
+    'id="conditioning-forward"',
     'aria-live="polite"',
     "EVIDENCE BOUNDARY",
     "PRIMARY SOURCES",
@@ -32,6 +36,9 @@ for needle in REQUIRED_HTML:
 assert "solve_json" in JS
 assert 'methods.safeguarded = methods.bisection' in JS
 assert "step.step_kind" in JS
+assert 'fetch("data/v1.0-conditioning.json")' in JS
+assert "caseData.residual" in JS
+assert "caseData.forward_error" in JS
 assert "requestAnimationFrame" not in JS, "motion must remain user-driven"
 assert "@media (prefers-reduced-motion: reduce)" in CSS
 assert "overflow-x: hidden" not in CSS, "do not conceal layout overflow"

@@ -17,6 +17,7 @@
       </a>
       <nav aria-label="Primary navigation">
         <a href="#laboratory">Laboratory</a>
+        <a href="#microscope">Residual microscope</a>
         <a href="#protocol">Protocol</a>
         <a href="#limits">Limits</a>
         <a href="https://github.com/lindgreendavid/mathlab-wasm">GitHub</a>
@@ -31,7 +32,7 @@
           <p class="lede">Fast is not the same as guaranteed. Change the method, starting values, and tolerance—then inspect every iterate, residual, and failure without hiding the assumptions.</p>
           <div class="hero-actions">
             <a class="button primary" href="#laboratory">Run an experiment</a>
-            <a class="button secondary" href="https://github.com/lindgreendavid/mathlab-wasm/blob/main/docs/protocol-v0.2.md">Read the v0.2 protocol</a>
+            <a class="button secondary" href="https://github.com/lindgreendavid/mathlab-wasm/blob/main/docs/protocol-v1.0.md">Read the v1.0 protocol</a>
           </div>
         </div>
         <div class="hero-visual" aria-label="Animated illustration of three numerical paths approaching a root">
@@ -53,9 +54,9 @@
       </section>
 
       <section class="status-strip" aria-label="Research status">
-        <div><span>RELEASE</span><strong>v0.2.0</strong></div>
+        <div><span>RELEASE</span><strong>v1.0.0</strong></div>
         <div><span>METHODS</span><strong>4</strong></div>
-        <div><span>FROZEN CASES</span><strong>12</strong></div>
+        <div><span>FROZEN CASES</span><strong>17</strong></div>
         <div><span>ARITHMETIC</span><strong>binary64</strong></div>
       </section>
 
@@ -158,6 +159,42 @@
         </div>
       </section>
 
+      <section class="microscope section" id="microscope">
+        <header class="section-heading microscope-heading">
+          <p class="eyebrow">V1.0 CONDITIONING DIAGNOSTIC</p>
+          <h2>A tiny residual can still hide a large root error.</h2>
+          <p>Select one of five prespecified cases. The numbers come directly from the committed
+            Rust report; the display changes, but the evidence does not.</p>
+        </header>
+        <div class="microscope-shell">
+          <div class="case-selector" id="conditioning-cases" aria-label="Conditioning cases">
+            <button type="button" data-conditioning-case="flat-scaled-linear" aria-pressed="true"><span>10⁻⁸ ×</span> Flat scaling</button>
+            <button type="button" data-conditioning-case="unit-linear" aria-pressed="false"><span>1 ×</span> Unit scaling</button>
+            <button type="button" data-conditioning-case="steep-scaled-linear" aria-pressed="false"><span>10⁸ ×</span> Steep scaling</button>
+            <button type="button" data-conditioning-case="simple-cubic-local" aria-pressed="false"><span>SIMPLE</span> Cubic root</button>
+            <button type="button" data-conditioning-case="repeated-root" aria-pressed="false"><span>MULTIPLE</span> Repeated root</button>
+          </div>
+          <article class="diagnostic" aria-live="polite" aria-atomic="true">
+            <div class="diagnostic-title">
+              <div><span class="result-label">EQUATION</span><strong id="conditioning-equation">Loading report…</strong></div>
+              <span class="diagnostic-badge" id="conditioning-classification">—</span>
+            </div>
+            <div class="error-visual" aria-label="Comparison of residual and forward error">
+              <div class="error-row"><span>Residual |f(x̂)|</span><div class="error-track"><i id="residual-bar"></i></div><strong id="conditioning-residual">—</strong></div>
+              <div class="error-row"><span>Forward error |x̂ − r|</span><div class="error-track"><i id="forward-bar"></i></div><strong id="conditioning-forward">—</strong></div>
+            </div>
+            <dl class="diagnostic-metrics">
+              <div><dt>Candidate x̂</dt><dd id="conditioning-candidate">—</dd></div>
+              <div><dt>|f′(r)|</dt><dd id="conditioning-derivative">—</dd></div>
+              <div><dt>Condition 1/|f′(r)|</dt><dd id="conditioning-condition">—</dd></div>
+              <div><dt>First-order estimate</dt><dd id="conditioning-estimate">—</dd></div>
+            </dl>
+            <p class="diagnostic-interpretation" id="conditioning-interpretation">Loading the frozen v1.0 result…</p>
+            <p class="diagnostic-boundary"><strong>Read carefully:</strong> the condition number uses an additive function-value perturbation model. For a multiple root, the simple-root estimate is unavailable—not zero.</p>
+          </article>
+        </div>
+      </section>
+
       <section class="comparison section" id="protocol">
         <header class="section-heading">
           <p class="eyebrow">READ THE GUARANTEE FIRST</p>
@@ -216,17 +253,18 @@
       <section class="boundaries section" id="limits">
         <div>
           <p class="eyebrow">EVIDENCE BOUNDARY</p>
-          <h2>What v0.2 supports—and what it does not.</h2>
+          <h2>What v1.0 supports—and what it does not.</h2>
         </div>
         <div class="boundary-columns">
           <article>
             <h3>Supported</h3>
             <ul>
-              <li>Deterministic behavior for twelve runs across two separately frozen protocols.</li>
+              <li>Deterministic behavior for seventeen cases across three separately frozen protocols.</li>
               <li>A certified bisection half-width when its bracket assumptions hold.</li>
               <li>Explicit detection of the selected cycle and denominator failures.</li>
               <li>One Rust implementation shared by tests, report, and browser.</li>
               <li>Preserved brackets and explicit interpolation/fallback labels in five v0.2 cases.</li>
+              <li>Residual, forward-error, and local conditioning diagnostics for five prespecified v1.0 cases.</li>
             </ul>
           </article>
           <article>
@@ -235,6 +273,7 @@
               <li>A universal ranking of root-finding algorithms.</li>
               <li>Performance claims for real scientific workloads.</li>
               <li>Proof that a small residual always means small root error.</li>
+              <li>A scale-free condition number or a valid simple-root estimate at a multiple root.</li>
               <li>Replacement of mature numerical libraries or interval solvers.</li>
             </ul>
           </article>
@@ -250,7 +289,8 @@
           <a href="https://dlmf.nist.gov/3.8"><span>METHODS</span><strong>NIST DLMF §3.8</strong><b aria-hidden="true">↗</b></a>
           <a href="https://doi.org/10.1093/comjnl/14.4.422"><span>SAFEGUARDS</span><strong>Brent (1971)</strong><b aria-hidden="true">↗</b></a>
           <a href="https://doi.org/10.1109/IEEESTD.2019.8766229"><span>ARITHMETIC</span><strong>IEEE 754-2019</strong><b aria-hidden="true">↗</b></a>
-          <a href="https://github.com/lindgreendavid/mathlab-wasm/blob/main/reports/v0.2-safeguarded-root-finding.json"><span>RESULT</span><strong>Machine-readable v0.2 report</strong><b aria-hidden="true">↗</b></a>
+          <a href="https://doi.org/10.1137/1.9780898718027"><span>ERROR ANALYSIS</span><strong>Higham (2002)</strong><b aria-hidden="true">↗</b></a>
+          <a href="https://github.com/lindgreendavid/mathlab-wasm/blob/main/reports/v1.0-conditioning.json"><span>RESULT</span><strong>Machine-readable v1.0 report</strong><b aria-hidden="true">↗</b></a>
         </div>
       </section>
     </main>

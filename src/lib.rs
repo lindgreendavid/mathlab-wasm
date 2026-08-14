@@ -1,4 +1,6 @@
-//! Deterministic one-dimensional root-finding traces for Mathlab WASM.
+//! Deterministic one-dimensional root-finding traces and conditioning diagnostics.
+
+pub mod conditioning;
 
 use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;

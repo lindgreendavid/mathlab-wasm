@@ -23,6 +23,15 @@ test("shows safeguarded interpolation and bisection from the Rust trace", async 
   await expect(page.getByText("bisection", { exact: true }).first()).toBeVisible();
 });
 
+test("loads the frozen conditioning report and switches cases", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.getByText("small residual high sensitivity", { exact: true })).toBeVisible();
+  await page.getByRole("button", { name: /Repeated root/ }).click();
+  await expect(page.getByText("simple root diagnostic unavailable", { exact: true })).toBeVisible();
+  await expect(page.getByText("Unavailable", { exact: true })).toHaveCount(2);
+  await expect(page.getByText(/derivative vanishes at the multiple root/i)).toBeVisible();
+});
+
 test("has no automatically detectable WCAG A/AA violations", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByText("Converged", { exact: true })).toBeVisible();
