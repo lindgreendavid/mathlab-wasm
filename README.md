@@ -1,6 +1,6 @@
 # Mathlab WASM
 
-**[Open the interactive laboratory →](https://lindgreendavid.github.io/mathlab-wasm/)**
+**[Open the interactive laboratory →](https://lindgreendavid.com/mathlab-wasm/)**
 
 [Read the v1.0 protocol](docs/protocol-v1.0.md) · [Inspect the v1.0 results](reports/v1.0-conditioning.json) · [View releases](https://github.com/lindgreendavid/mathlab-wasm/releases)
 
